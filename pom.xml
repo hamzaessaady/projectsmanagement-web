@@ -26,17 +26,17 @@
 			<artifactId>jsf-api</artifactId>
 		</dependency> -->
 
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
 		</dependency>
 
-		<dependency>
+		 <dependency>
 			<groupId>org.primefaces.themes</groupId>
 			<artifactId>all-themes</artifactId>
 		</dependency>
 
-		<dependency>
+		<!--<dependency>
 			<groupId>javax.enterprise</groupId>
 			<artifactId>cdi-api</artifactId>
 		</dependency> -->

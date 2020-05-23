@@ -1,22 +1,135 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	  xmlns:h="http://java.sun.com/jsf/html"
-	  xmlns:f="http://java.sun.com/jsf/core"
-	  xmlns:ui="http://java.sun.com/jsf/facelets"
-	  xmlns:p="http://primefaces.org/ui">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
 <f:view contentType="text/html">
 
-	<h:head> 
+	<h:head>
 		<meta charset="UTF-8" />
+
+		<h:outputStylesheet name="css/style.css" />
+		<h:outputStylesheet name="css/primeflex/primeflex.css" />
 		<title>Welcome</title>
+
+		<style>
+			body {
+				height:100vh;
+				margin: 0 8.33%;
+				background: url("resources/images/scrum_board.png") 100% 100%/40% no-repeat,
+				linear-gradient(to left, #0072ff, #00c6ff);
+			}
+			
+			ul {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+			}
+			
+			.blueSky { color: #00C6FF; }
+			.bluSky-darken { color: #0072FF; }
+			.yellow { color: #FFE32C; }
+			.white { color: #EBF2FA; }
+			.black { color: #293132; }
+			
+			.bg-yellow {background-color: #FFE32C !important;}
+			.bg-blueSky-darken {background-color: #0072FF !important;}
+			
+			.mt-5 {margin-top: 5em;}
+			.mt-4 {margin-top: 4em;}
+			
+			.pl-1 {padding-left: 1em;}
+			.pr-1 {padding-right: 1em;}
+			.pr-5 {padding-right: 5em !important;}
+			
+			.text-bold {font-weight: 500;}
+			
+			.logo {
+    			width:195px;
+    			height: 82px;   
+			}
+			
+			.underlined {
+				border-bottom: 4px red dashed;
+				border-color: #FFE32C;
+			}
+			
+			.underline--magical {
+  				background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+  				background-repeat: no-repeat;
+  				background-size: 100% 0.3em;
+  				background-position: 0 88%;
+  				transition: background-size 0.25s ease-in;}
+  				
+			  .underline--magical:hover {
+			    background-size: 100% 88%;
+			  }
+			  
+			  .ui-float-label>input:focus ~ label,
+			  .ui-float-label>input.ui-state-filled ~ label{
+			  	top: -0.4em;
+			  	color: #FFE32C;
+			  }
+			  
+			  .btn-md{
+			  	padding: 0.4em 1.5em;
+			  	font-size: 2em;
+			  }
+		</style>
+
 	</h:head>
-	
+
+
 	<h:body>
-		<h1>Hallo Zusammenaaaaaa good rrr hhh Fuuuuuckers</h1>
-		<h:form>
-			<p:button value="Navigate"/>
-			<p:editor value="Hello World, PrimeFacesRocks!!"/>
-		</h:form>
+		
+		<!-- Header -->
+		<header class="p-grid p-align-center white">
+			<div class="p-col-7">
+				<img src="resources/images/Logo.svg" alt="Gestion+ Logo" class="logo"/>
+			</div>
+			<nav class="p-col-5">
+				<ul class="p-grid yellow">
+					<li class="p-col"><a class="yellow text-bold" href="#">HOME</a></li>
+					<li class="p-col"><a class="yellow text-bold" href="#">HELP</a></li>
+					<li class="p-col"><a class="yellow text-bold" href="#">FAQ</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		
+		<!-- Banner -->
+		<section class="mt-4">
+			<h1 class="white">
+				<span>Set up your <span class="yellow">PROJECTS</span></span><br/>
+				<span>Manage
+					<span class="underlined">TIME</span> &amp;
+					<span class="underlined">TASKS</span> &amp;
+					<span class="underlined">COLABORATORS</span>
+				</span><br/>
+				<span class="underline--magical black">With ease.</span>
+			</h1>
+		</section>
+		
+		
+		<!-- Login -->
+		<section class="mt-5">
+			<h:form>
+				<h4 class="black">Please enter your credentials : </h4>
+				<div class="p-grid">
+					<span class="p-col-3 ui-float-label">
+						<p:inputText id="input-username" styleClass="pr-5" value="" required="true"/>
+						<p:outputLabel styleClass="pl-1" for="@previous" value="Username" />
+					</span>
+					<span id="floating-label" class="p-col-3 ui-float-label">
+						<p:password id="input-psw" styleClass="pr-5" value="" required="true"/>
+						<p:outputLabel styleClass="pl-1 floating-label" for="@previous" value="Password" />
+					</span>
+				</div>
+			</h:form>
+			<p:button styleClass="bg-blueSky-darken btn-md" value="Login" > </p:button>
+		</section>
+
 	</h:body>
 	
 </f:view>
