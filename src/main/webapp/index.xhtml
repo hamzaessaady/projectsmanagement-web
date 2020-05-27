@@ -1,0 +1,73 @@
+<ui:composition template="/WEB-INF/templates/MasterLayout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+	<!-- Page Title -->
+	<ui:param name="title" value="Welcome" />
+	
+	<!-- Header -->
+	<ui:param name="headerType" value="home" />
+	
+	<!-- Main Content -->
+	<ui:define name="content">
+
+		<!-- Banner -->
+		<section class="mt-4">
+			<h1 class="white">
+				<span>Set up your <span class="yellow">PROJECTS</span></span><br />
+				<span>Manage <span class="underlined">TIME</span> &amp; <span
+					class="underlined">TASKS</span> &amp; <span class="underlined">COLABORATORS</span>
+				</span><br /> <span class="underline--magical black">With ease.</span>
+			</h1>
+		</section>
+
+		<!-- Login -->
+		<section class="mt-5">
+			<c:if test="#{request.isUserInRole('**')}">
+				<div class="simple-card">
+					<h3 class="card-header black mt-0">You are logged in !</h3>
+					<p:button styleClass="btn-md shadow" value="Go to Dashboard"
+						outcome="views/dashboard.xhtml"
+						disabled="#{not security.hasAccessToWebResource('/views/dashboard.xhtml')}" />
+				</div>
+			</c:if>
+			<c:if test="#{empty request.userPrincipal}">
+				<h:form id="loginForm">
+
+					<h4 class="black">Please enter your credentials :</h4>
+					<div class="p-grid">
+						<span class="p-col-3 ui-float-label"> <p:inputText
+								id="input-username" styleClass="pr-5" label="Username"
+								value="#{loginBacking.username}" required="true">
+								<p:ajax update="errorMsgs" event="keyup" />
+							</p:inputText> <p:outputLabel styleClass="pl-1" for="@previous"
+								value="Username" />
+						</span> <span class="p-col-3 ui-float-label"> <p:password
+								id="input-psw" styleClass="pr-5" label="Password"
+								value="#{loginBacking.password}" required="true">
+								<p:ajax update="errorMsgs" event="keyup" />
+							</p:password> <p:outputLabel styleClass="pl-1" for="@previous"
+								value="Password" />
+						</span>
+					</div>
+					<p:commandButton styleClass="bg-blueSky-darken btn-md shadow"
+						value="Login" validateClient="true" ajax="false"
+						action="#{loginBacking.login}" />
+
+					<div class="p-grid">
+						<div class="p-col-6">
+							<p:messages id="errorMsgs" closable="true" />
+						</div>
+					</div>
+
+				</h:form>
+			</c:if>
+
+		</section>
+	</ui:define>
+	
+</ui:composition>
