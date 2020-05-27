@@ -1,10 +1,19 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition template="/WEB-INF/templates/MasterLayout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
-<f:view contentType="text/html">
-	<h1>Dashboard</h1>
-</f:view>
-</html>
+	
+	<!-- Page Title -->
+	<ui:param name="title" value="Dashboard" />
+	
+	<!-- Header -->
+	<ui:param name="headerType" value="dashboard" />
+	
+	<!-- Main Content -->
+	<ui:define name="content">
+		<h1 class="yellow">Dashboard</h1>
+	</ui:define>
+
+</ui:composition>

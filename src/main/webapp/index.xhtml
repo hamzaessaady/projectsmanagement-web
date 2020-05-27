@@ -1,224 +1,73 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition template="/WEB-INF/templates/MasterLayout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
-<f:view contentType="text/html">
 
-	<h:head>
-		<meta charset="UTF-8" />
+	<!-- Page Title -->
+	<ui:param name="title" value="Welcome" />
+	
+	<!-- Header -->
+	<ui:param name="headerType" value="home" />
+	
+	<!-- Main Content -->
+	<ui:define name="content">
 
-		<h:outputStylesheet name="css/style.css" />
-		<h:outputStylesheet name="css/primeflex/primeflex.css" />
-		<title>Welcome</title>
-
-		<style>
-			body {
-				height:100vh;
-				margin: 0 8.33%;
-				background: url("resources/images/scrum_board.png") 100% 100%/40% no-repeat,
-				linear-gradient(to left, #0072ff, #00c6ff);
-			}
-			
-			ul {
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			
-			.blueSky { color: #00C6FF; }
-			.bluSky-darken { color: #0072FF; }
-			.yellow { color: #FFE32C; }
-			.white { color: #EBF2FA; }
-			.black { color: #293132; }
-			
-			.bg-yellow {background-color: #FFE32C !important;}
-			.bg-blueSky-darken {background-color: #0072FF !important;}
-			
-			.bg-blueSky-gradient {
-				background:linear-gradient(to left, #0072ff, #293132) !important;
-			}
-			
-			
-			.mt-0 {margin-top: 0;}
-			.mt-5 {margin-top: 5em;}
-			.mt-4 {margin-top: 4em;}
-			
-			.pt-0 {padding-top: 0;}
-			.pl-1 {padding-left: 1em;}
-			.pr-1 {padding-right: 1em;}
-			.pr-5 {padding-right: 5em !important;}
-			
-			.text-bold {font-weight: 500;}
-			
-			.logo {
-    			width:195px;
-    			height: 82px;   
-			}
-			
-			.underlined {
-				border-bottom: 4px red dashed;
-				border-color: #FFE32C;
-			}
-			
-			.underline--magical {
-  				background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
-  				background-repeat: no-repeat;
-  				background-size: 100% 0.3em;
-  				background-position: 0 88%;
-  				transition: background-size 0.25s ease-in;}
-  				
-			  .underline--magical:hover {
-			    background-size: 100% 88%;
-			  }
-			  
-			  .ui-float-label>input:focus ~ label,
-			  .ui-float-label>input.ui-state-filled ~ label{
-			  	top: -0.4em;
-			  	color: #FFE32C;
-			  }
-			  
-			  .btn-md{
-			  	padding: 0.4em 1.5em;
-			  	font-size: 2em;
-			  }
-			  
-			  .shadow {
-			  	-webkit-box-shadow: 0 10px 6px -6px #777;
-       			-moz-box-shadow: 0 10px 6px -6px #777;
-            	box-shadow: 0 10px 6px -6px #777;
-			  }
-			  
-			  .ui-messages .ui-messages-error {
-			    font-size: 0.8em !important;
-			  	background-color: #FEE140;
-				background-image: linear-gradient(90deg, transparent, rgba(255,227,44,0.4) 0%, rgb(250, 112, 154, 0.4) 100%);
-			  }
-			  
-			  .ui-inputfield.ui-state-error {
-			  	border: 2px solid #ef476f !important;
-			
-			  }
-			  
-			  .ui-state-error {
-			  	color: #ef476f  !important;
-			  	
-			  }
-			  
-			  .simple-card {
-			  	width: 30vw;
-			  	background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
-			  	border-radius:10px 10px;
-			  	box-shadow:
-				  0 2.8px 2.2px rgba(0, 0, 0, 0.034),
-				  0 6.7px 5.3px rgba(0, 0, 0, 0.048),
-				  0 12.5px 10px rgba(0, 0, 0, 0.06),
-				  0 22.3px 17.9px rgba(0, 0, 0, 0.072),
-				  0 41.8px 33.4px rgba(0, 0, 0, 0.086),
-				  0 100px 80px rgba(0, 0, 0, 0.12);
-				text-align: center;
-				padding: 1em;
-			  } 
-			  
-		</style>
-
-	</h:head>
-
-
-	<h:body>
-		
-		<!-- Header -->
-		<header class="p-grid p-align-center white">
-			<div class="p-col-7">
-				<img src="resources/images/Logo.svg" alt="Gestion+ Logo" class="logo"/>
-			</div>
-			<nav class="p-col-5">
-				<ul class="p-grid yellow">
-					<li class="p-col"><a class="yellow text-bold" href="#">HOME</a></li>
-					<li class="p-col"><a class="yellow text-bold" href="#">HELP</a></li>
-					<li class="p-col"><a class="yellow text-bold" href="#">FAQ</a></li>
-				</ul>
-			</nav>
-		</header>
-
-		
 		<!-- Banner -->
 		<section class="mt-4">
 			<h1 class="white">
-				<span>Set up your <span class="yellow">PROJECTS</span></span><br/>
-				<span>Manage
-					<span class="underlined">TIME</span> &amp;
-					<span class="underlined">TASKS</span> &amp;
-					<span class="underlined">COLABORATORS</span>
-				</span><br/>
-				<span class="underline--magical black">With ease.</span>
+				<span>Set up your <span class="yellow">PROJECTS</span></span><br />
+				<span>Manage <span class="underlined">TIME</span> &amp; <span
+					class="underlined">TASKS</span> &amp; <span class="underlined">COLABORATORS</span>
+				</span><br /> <span class="underline--magical black">With ease.</span>
 			</h1>
 		</section>
-		
-		
+
 		<!-- Login -->
 		<section class="mt-5">
 			<c:if test="#{request.isUserInRole('**')}">
 				<div class="simple-card">
-					<h3 class="card-header black mt-0">
-						You are logged in !
-					</h3>
-					<p:button
-						styleClass="btn-md shadow"
-						value="Go to Dashboard"
+					<h3 class="card-header black mt-0">You are logged in !</h3>
+					<p:button styleClass="btn-md shadow" value="Go to Dashboard"
 						outcome="views/dashboard.xhtml"
-						disabled="#{not security.hasAccessToWebResource('/views/dashboard.xhtml')}"/>
+						disabled="#{not security.hasAccessToWebResource('/views/dashboard.xhtml')}" />
 				</div>
 			</c:if>
 			<c:if test="#{empty request.userPrincipal}">
-			<h:form id="loginForm">
-				
-				<h4 class="black">Please enter your credentials : </h4>
-				<div class="p-grid">
-					<span class="p-col-3 ui-float-label">
-						<p:inputText
-							id="input-username" 
-							styleClass="pr-5" label="Username"
-							value="#{loginBacking.username}"
-							required="true">
-							<p:ajax update="errorMsgs" event="keyup"/>
-						</p:inputText>
-						<p:outputLabel
-							styleClass="pl-1"
-							for="@previous" value="Username" />
-					</span>
-					<span class="p-col-3 ui-float-label">
-						<p:password
-							id="input-psw"
-							styleClass="pr-5" label="Password"
-							value="#{loginBacking.password}"
-							required="true">
-							<p:ajax update="errorMsgs" event="keyup"/>
-						</p:password>
-						<p:outputLabel
-							styleClass="pl-1"
-							for="@previous" value="Password" />		
-					</span>
-				</div>
-				<p:commandButton
-					styleClass="bg-blueSky-darken btn-md shadow" value="Login"
-					validateClient="true" ajax="false"
-					action="#{loginBacking.login}"/>
-					
-				<div class="p-grid">
-					<div class="p-col-6">
-						<p:messages id="errorMsgs" closable="true"/>
-					</div>
-				</div>
-				
-			</h:form>
-			</c:if>
-			
-		</section>
+				<h:form id="loginForm">
 
-	</h:body>
+					<h4 class="black">Please enter your credentials :</h4>
+					<div class="p-grid">
+						<span class="p-col-3 ui-float-label"> <p:inputText
+								id="input-username" styleClass="pr-5" label="Username"
+								value="#{loginBacking.username}" required="true">
+								<p:ajax update="errorMsgs" event="keyup" />
+							</p:inputText> <p:outputLabel styleClass="pl-1" for="@previous"
+								value="Username" />
+						</span> <span class="p-col-3 ui-float-label"> <p:password
+								id="input-psw" styleClass="pr-5" label="Password"
+								value="#{loginBacking.password}" required="true">
+								<p:ajax update="errorMsgs" event="keyup" />
+							</p:password> <p:outputLabel styleClass="pl-1" for="@previous"
+								value="Password" />
+						</span>
+					</div>
+					<p:commandButton styleClass="bg-blueSky-darken btn-md shadow"
+						value="Login" validateClient="true" ajax="false"
+						action="#{loginBacking.login}" />
+
+					<div class="p-grid">
+						<div class="p-col-6">
+							<p:messages id="errorMsgs" closable="true" />
+						</div>
+					</div>
+
+				</h:form>
+			</c:if>
+
+		</section>
+	</ui:define>
 	
-</f:view>
-</html>
+</ui:composition>
