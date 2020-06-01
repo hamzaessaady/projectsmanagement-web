@@ -1,0 +1,26 @@
+<ui:composition template="/WEB-INF/templates/MasterLayout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name="header">
+    	<ui:include src="/WEB-INF/includes/headerDashboard.xhtml" />
+    </ui:define>
+    
+    <ui:define name="content">
+        <p:tabMenu activeIndex="#{tabIndex}">
+			<p:menuitem value="DASHBOARD"  outcome="/index.xhtml" icon="fa fa-fw fa-dashboard"/>
+			<p:menuitem value="PROJECTS" outcome="/index.xhtml"  icon="fa fa-fw fa-code-fork"/>
+			<p:menuitem value="COLLABORATORS" outcome="/index.xhtml" icon="fa fa-fw fa-users"/>
+			<p:menuitem value="COMPETENCES" outcome="/index.xhtml" icon="fa fa-fw fa-cogs" />
+		</p:tabMenu>
+		<ui:insert name="tab-content" />
+    </ui:define>
+    
+    <ui:define name="footer">
+    	<ui:include src="/WEB-INF/includes/footerDashboard.xhtml" />
+    </ui:define>
+    
+</ui:composition>

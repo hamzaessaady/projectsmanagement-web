@@ -5,12 +5,14 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 <f:view contentType="text/html">
-
+	
+	<!-- HEAD -->
 	<h:head>
 		<meta charset="UTF-8" />
 
 		<h:outputStylesheet name="css/style.css" />
 		<h:outputStylesheet name="css/primeflex/primeflex.css" />
+		<h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
 		
 		<!-- Title -->
 		<title>#{title} | Projects Management</title>
@@ -20,25 +22,30 @@
 		
 	</h:head>
 
-
+	<!-- BODY -->
 	<h:body>
 		
-		<!-- Header -->
+		<!-- Header (Default) -->
 		<header >
-			<c:if test="#{headerType eq 'home'}">
+			<ui:insert name="header">
 				<ui:include src="/WEB-INF/includes/headerHome.xhtml" />
-			</c:if>
-			<c:if test="#{headerType eq 'dashboard'}">
-				<h5>Here is the Header</h5>
-			</c:if>
+			</ui:insert>
 		</header>
 		
 		<!-- Main -->
 		<main>
 			<ui:insert name="content"/>
 		</main>
+		
+		<!-- Footer -->
+		<footer>
+			<ui:insert name="footer" />
+		</footer>
 
 	</h:body>
+	
+	<!-- SCRIPT -->
+	<ui:insert name="script" />
 	
 </f:view>
 </html>

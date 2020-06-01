@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<body>
+	<ui:composition>
+		<div class="p-grid p-align-center white">
+			<div class="p-col-5">
+				<img src="../resources/images/Logo.svg"
+					alt="Projects Management LOGO" class="logo" />
+			</div>
+			<div class="p-col-2 p-offset-5 user-button">
+				<h:form>
+					<p:menuButton value="admin"
+								  iconPos="right"
+								  icon="fa fa-fw fa-user">
+						<p:menuitem value="Logout" icon="fa fa-fw fa-sign-out"/>
+					</p:menuButton>
+				</h:form>
+			</div>
+		</div>
+	</ui:composition>
+</body>
+
+</html>
