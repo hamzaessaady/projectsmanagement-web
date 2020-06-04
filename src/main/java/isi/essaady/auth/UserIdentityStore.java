@@ -33,9 +33,8 @@ public class UserIdentityStore implements IdentityStore {
 		Optional<User> optionalUser = userBean.findByUsernamePassword(username, password);
 		if (optionalUser.isPresent()) {
 			User user = optionalUser.get();
-			System.out.print(user.getUserName() + " " + user.getPassword());
 			return new CredentialValidationResult(
-					user.getUserName(),
+					user.getUsername(),
 					new LinkedHashSet<String>(
 							Arrays.asList(user.getUserGroup(),user.getRole())
 					));
