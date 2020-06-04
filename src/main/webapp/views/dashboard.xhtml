@@ -26,116 +26,148 @@
 				<div class="p-col projects-overview shadow">
 					<div class="overview-title">Projects</div>
 					<div class="overview-count">
-						<i class="fa fa-fw fa-bolt" /><strong>4</strong>
+						<i class="fa fa-fw fa-bolt" />
+						<strong>#{dashboardBacking.projects.size()}</strong>
 					</div>
 					<img src="../resources/images/project-icon.png" />
 				</div>
 				<div class="p-col collab-overview shadow">
 					<div class="overview-title">Collaborators</div>
 					<div class="overview-count">
-						<i class="fa fa-fw fa-bolt" /><strong>10</strong>
+						<i class="fa fa-fw fa-bolt" />
+						<strong>#{dashboardBacking.collabs.size()}</strong>
 					</div>
 					<img src="../resources/images/collab-icon.png" />
 				</div>
 				<div class="p-col comp-overview shadow">
 					<div class="overview-title">Competences</div>
 					<div class="overview-count">
-						<i class="fa fa-fw fa-bolt" /><strong>40</strong>
+						<i class="fa fa-fw fa-bolt" />
+						<strong>#{dashboardBacking.comps.size()}</strong>
 					</div>
 					<img src="../resources/images/comp-icon.png" />
 				</div>
 			</section>
 
 			<!-- Chart+panel section -->
-			<section class="p-grid mt-3" style="height:100%;">
+			<section class="p-grid mt-3">
 
 				<!-- Chart -->
 				<div class="p-col p-col-align-center">
-					<p:panel styleClass="shadow-s2" style="height:100%;">
-						<h3 class="mt-0">Projects Summary</h3>
-						<p:donutChart model="#{dashboardChartsBacking.donutModel}" />
+					<p:panel styleClass="shadow-s2 chart-panel">
+						<h3 class="pt-0-5 mt-0">Projects Summary</h3>
+						<p:staticMessage severity="info" detail="There is no project"
+							summary="EMPTY" styleClass="empty-message-2"
+							rendered="#{empty dashboardBacking.projects}" />
+						<p:donutChart rendered="#{!empty dashboardBacking.projects}"
+							model="#{dashboardChartsBacking.donutModel}" />
 					</p:panel>
 				</div>
 				<!-- Panel -->
 				<div class="p-col p-col-align-center">
-					<p:panel styleClass="shadow-s2" style="height:100%;">
-						<h3 class="mt-0">Last Added collaborators</h3>
+					<p:panel styleClass="shadow-s2 chart-panel">
+						<h3 class="pt-0-5 mt-0">Last Added collaborators</h3>
+						<p:staticMessage severity="info" detail="There is no collaborator"
+							summary="EMPTY" styleClass="empty-message-2"
+							rendered="#{empty dashboardBacking.collabs}" />
 						<!-- last Collabs -->
-						<ui:repeat begin="1" end="4">
-    
-
-						<div class="p-grid p-align-center px-0-5">
-							<div class="p-col-8">
-								<div class="p-grid p-align-center avatar-name-box">
-									<div class="p-col-3 md-avatar-circle avatar-circle">
-										Hamza Es-saady
-       								</div>
-									<div class="p-col-9 collab-name-box" >
-										Hamza Es-saady
+						<p:outputPanel style="display:block"
+							rendered="#{! empty dashboardBacking.collabs}" >
+							<ui:repeat
+								var="collab"
+								value="#{dashboardBacking.collabs}"
+								size="#{dashboardBacking.collabs.size()>4 ? 4 : dashboardBacking.collabs.size()}">
+								<div class="p-grid p-align-center px-0-5">
+									<div class="p-col-8">
+										<div class="p-grid p-align-center avatar-name-box">
+											<div class="p-col-3 md-avatar-circle avatar-circle">
+												#{collab.lastName} #{collab.firstName}
+											</div>
+											<div class="p-col-9 collab-name-box">
+												#{collab.lastName} #{collab.firstName}
+											</div>
+										</div>
+									</div>
+									<div class="p-col-2 collab-tasks bluSky-darken">
+										<i class="fa fa-fx fa-tasks" />
+										#{collab.collabTaskPlans.size()}
+									</div>
+									<div class="p-col-2 collab-comp bluSky-darken">
+										<i class="fa fa-fx fa-certificate" />
+										#{collab.competences.size()}
 									</div>
 								</div>
-							</div>
-							<div class="p-col-2 collab-tasks bluSky-darken">
-								<i class="fa fa-fx fa-tasks"/> 4
-							</div>
-							<div class="p-col-2 collab-comp bluSky-darken">
-								<i class="fa fa-fx fa-certificate"/> 26
-							</div>
+							</ui:repeat>
+						</p:outputPanel>
+						<div class="click-link">
+							<p:link style="font-size:0.8em" styleClass="blueSky">
+    							Click here to see all collaborators
+    						</p:link>
 						</div>
-						</ui:repeat>
 					</p:panel>
+
 				</div>
 			</section>
 
 			<!-- last projects section -->
 			<section class="mt-3 some-projects-section shadow-s2">
 				<h3 class="white" style="text-align: left;">Last Projects</h3>
-				
+
 				<div class="p-grid p-justify-center">
 					<div class="p-col-6 ">
-						<p:carousel numVisible="1"
-									circular="true"
-									value="#{dashboardBacking.cars}"
-									var="car" 
-									itemStyle="text-align:center"
-									responsive="true">
-							<p:panelGrid columns="2"
-										columnClasses="label,value"
-										layout="grid"
-										styleClass="ui-noborder projects-show"
-										>
+						<p:staticMessage severity="info"
+							summary="EMPTY" detail="There is no project"
+							styleClass="empty-message"
+							rendered="#{empty dashboardBacking.projects}" />
+						<p:carousel numVisible="1" circular="true"
+							value="#{dashboardBacking.projects}" var="project"
+							rendered="#{!empty dashboardBacking.projects}"
+							itemStyle="text-align:center" responsive="true">
+							<p:panelGrid columns="2" columnClasses="label,value"
+								layout="grid" styleClass="ui-noborder projects-show">
 								<f:facet name="header">
-									<span class="underline--magical-2">My Project Name</span>
+									<span class="underline--magical-2"> #{project.title} </span>
 								</f:facet>
-								
-								<span> <i class="fa fx fa-clock-o" />Duration</span>
-								<h:outputText value="#{car.name}" />
-								<span> <i class="fa fx fa-calendar-check-o" />Start date</span>
-								<h:outputText value="#{car.last}" />
-								<span> <i class="fa fx fa-calendar-minus-o" />End date</span>
-								<h:outputText value="#{car.tasks}" />
-								<span> <i class="fa fx fa-tasks" />Tasks</span>
-								<h:outputText value="$#{car.skills}" />
-							</p:panelGrid>	
-							</p:carousel>
+
+								<span> <i class="fa fx fa-clock-o" />Duration
+								</span>
+								<h:outputText value="#{project.duration} hours" />
+								<span> <i class="fa fx fa-calendar-check-o" />Start date
+								</span>
+								<h:outputText value="#{project.startDate}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+								<span> <i class="fa fx fa-calendar-minus-o" />End date
+								</span>
+								<h:outputText value="#{project.endDate}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+								<span> <i class="fa fx fa-tasks" />Tasks
+								</span>
+								<h:outputText value="#{project.tasks.size()}" />
+							</p:panelGrid>
+						</p:carousel>
 					</div>
 				</div>
-				
-    			<h3 style="text-align: right; text-decoration: underline;">
-    				<p:link styleClass="blueSky">Click here to see all the projects</p:link>
-    			</h3>
+
+				<h3 style="text-align: right; text-decoration: underline;">
+					<p:link styleClass="blueSky">Click here to see all projects</p:link>
+				</h3>
 			</section>
 		</article>
 
 	</ui:define>
 
-	
+
 	<ui:define name="script">
 		<script src="../resources/js/randomColor.js"></script>
 		<script src="../resources/js/material-avatar.js"></script>
 		<script>
 			MaterialAvatar(document.getElementsByClassName('md-avatar-circle'),
-					{shape : 'circle', randomColor: randomColor()});
+					{
+						shape : 'circle',
+						randomColor : randomColor()
+					});
 		</script>
 	</ui:define>
 

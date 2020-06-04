@@ -3,12 +3,12 @@ package isi.essaady.auth;
 import java.io.IOException;
 import java.io.Serializable;
 
+import javax.enterprise.context.RequestScoped;
 import javax.faces.annotation.ManagedProperty;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.security.enterprise.AuthenticationStatus;
@@ -22,7 +22,7 @@ import javax.validation.constraints.Size;
 
 @SuppressWarnings("cdi-ambiguous-dependency")
 @Named("loginBacking")
-@ViewScoped
+@RequestScoped
 public class LoginBacking  implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

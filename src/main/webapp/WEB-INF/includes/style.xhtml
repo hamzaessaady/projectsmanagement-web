@@ -3,7 +3,7 @@
 
 	<style>
 
-		body {
+		body .landing {
 			height: 100vh;
 			margin: 0 8.33%;
 			background: url("resources/images/scrum_board.png") 100% 100%/40% no-repeat,
@@ -54,9 +54,12 @@
 		.px-4 { padding: 4em; }
 		.px-5 { padding: 5em; }
 		.pt-0 { padding-top: 0; }
+		.pt-0-5 { padding-top: 0.5em; }
 		.pl-1 { padding-left: 1em; }
 		.pr-1 { padding-right: 1em; }
 		.pr-5 { padding-right: 5em !important; }
+		.pb-1 { padding-bottom: 1em; }
+		.pb-2 { padding-bottom: 2em; }
 
 		/* Others */
 		.text-bold { font-weight: 500; }
@@ -321,6 +324,61 @@
 		.projects-show i {
 			margin-right: 10px;
 		}
+	
+    	
+    	.empty-message.ui-message.ui-message-info {
+    		font-size:1.5em;
+    		width:100%;
+    		color: rgb(235, 242, 250, 0.5);
+			background-color:rgba(0, 198, 255, 0.4);
+    		text-align:center;
+    		padding:15%;
+    	}
+    	
+    	.empty-message .ui-message-info-detail{
+    		display:block;
+    		color: rgb(235, 242, 250, 0.5);
+    		font-weight: 500;
+    		font-size:14px;
+    	}
+    	
+    	.empty-message.ui-message.ui-message-info .ui-message-info-icon,
+    	.empty-message-2.ui-message.ui-message-info .ui-message-info-icon{
+    		display:none;
+    	}
+    	
+    	.empty-message-2.ui-message.ui-message-info {
+    		width:100%;
+    		background-color: #e5e5e5;
+    		text-align:center;
+    		padding:15% 10%;
+    	}
+    	
+    	.empty-message-2.ui-message.ui-message-info .ui-message-info-summary{
+    		font-size:2.3em;
+    		color: rgb(0, 198, 255, 0.5);
+    		
+    	}
+    	
+    	.empty-message-2 .ui-message-info-detail{
+    		display:block;
+    		color: rgb(0, 198, 255, 0.5);
+    		font-weight: 500;
+    	}
+    	
+    	.chart-panel .ui-panel-content.ui-widget-content{
+    		height: 51vh;
+    		overflow: auto;
+    	}
+    	
+    	.click-link{
+    		font-weight: bold;
+    		text-align: right;
+    		text-decoration: underline;
+    		margin:0;
+    		padding:0;
+    	}
+    
 		
 	</style>
 
