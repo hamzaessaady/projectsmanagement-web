@@ -1,0 +1,111 @@
+<ui:composition template="/WEB-INF/templates/DashboardLayout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- Page Title -->
+	<ui:param name="title" value="Competences" />
+
+	<!-- Tab Index -->
+	<ui:param name="tabIndex" value="4" />
+
+	<!-- Main Content -->
+	<ui:define name="tab-content">
+
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="../index.xhtml" />
+			<p:menuitem value="Dashboard" url="dashboard.xhtml" />
+			<p:menuitem value="Competences" url="competences.xhtml" />
+		</p:breadCrumb>
+
+		<!-- Section Banner -->
+		<section class="banner-section banner-comps">
+			<h1 class="white mb-1">Competences</h1>
+			<div class="yellow" style="">
+				<i class="fa fa-fw fa-bolt" /> <strong>#{compsBacking.comps.size()}</strong>
+				competence(s) in total
+			</div>
+			<img src="../resources/images/comp-icon.png" />
+		</section>
+
+		<!-- Main Article -->
+		<article class="tab-article">
+
+			<!-- Section Data table -->
+			<section class="data-table-section shadow-s2">
+				<h3>Competences list and information :</h3>
+				<h:form id="sec-form">
+					<p:growl id="msgs" showDetail="true"/>
+					
+					<p:dataTable id="tbl1" var="comp" value="#{compsBacking.comps}"
+						paginator="true" rows="2" widgetVar="compsTable"
+						filteredValue="#{compsBacking.filteredComps}"
+						editable="true"
+						styleClass="shadow-s2">
+						<f:facet name="header">
+        				All available competences
+        				<div class="ui-inputgroup p-grid p-justify-end ">
+
+								<p:inputText placeholder="Search"
+									onkeyup="document.getElementById('sec-form:tbl1:clm-name:filter').value = this.value;PF('compsTable').filter();" />
+								<p:commandButton icon="fa fx fa-search"
+									styleClass="white-button" />
+							</div>
+						</f:facet>
+						
+						<p:ajax event="rowEdit" listener="#{compsBacking.onRowEdit}"
+        						update="@form:msgs" />
+        				<p:ajax event="rowEditInit" listener="#{compsBacking.onRowEditInit}"
+        						update="@form:msgs" />	
+        				<p:ajax event="rowEditCancel" listener="#{compsBacking.onRowCancel}"
+        						update=":@form:msgs" />
+
+						<p:column headerText="Id" sortBy="#{comp.idComp}">
+							<h:outputText value="#{comp.idComp}" />
+						</p:column>
+
+						<p:column filterBy="#{comp.name}" filterMatchMode="contains"
+							id="clm-name" headerText="Name" sortBy="#{comp.name}">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{comp.name}" />
+								</f:facet>
+								<f:facet name="input">
+									<h:inputText id="nameInput" value="#{comp.name}" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Collaborators"
+							sortBy="#{comp.collaborators.size()}">
+							<h:outputText value="#{comp.collaborators.size()}" />
+						</p:column>
+
+						<p:column headerText="Tasks" sortBy="#{comp.tasks.size()}">
+							<h:outputText value="#{comp.tasks.size()}" />
+						</p:column>
+
+						<p:column style="width:35px">
+							<p:rowEditor />
+						</p:column>
+
+					</p:dataTable>
+				</h:form>
+			</section>
+
+			<!-- Section Chart -->
+
+
+
+		</article>
+
+	</ui:define>
+
+
+	<ui:define name="script">
+
+	</ui:define>
+
+</ui:composition>
