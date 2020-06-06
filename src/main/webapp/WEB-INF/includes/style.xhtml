@@ -193,12 +193,7 @@
 		.ui-tabmenuitem:active {
 			opacity: 1 !important;
 		}
-
-		/* .ui-tabmenuitem.ui-state-default.ui-state-active.ui-corner-top.ui-tabmenuitem-hasicon {
-			opacity: 1 !important;
-			background-color: white !important;
-			border-color: white !important;
-		} */
+		
 		.ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem.ui-state-active {
 			opacity: 1 !important;
 			background-color: white !important;
@@ -400,7 +395,7 @@
     	.banner-section img {
 			position: absolute;
 			right: 0;
-			width: 90px;
+			width: 120px;
 			bottom: 0px;
 		}
     	
@@ -447,9 +442,7 @@
 		    font-weight: bold;
     	}
     	
-    	.data-table-section td{
-    		font-weight: 500;
-    	}
+    	.data-table-section td{font-weight: 500;}
     	
     	.ui-state-default.ui-sortable-column.ui-state-active {
     		background-color: #eaeaea;
@@ -462,12 +455,57 @@
 	        border-color: #d6d6d6;
     	}
     	
-    	.ui-datatable .ui-column-filter[id='sec-form:tbl1:clm-name:filter'] {
-  			display: none;
-		}
+    	.ui-datatable .ui-column-filter[id='sec-form:tbl1:clm-name:filter'] { display: none; }
     
     	.ui-datatable .ui-datatable-data>tr.ui-state-highlight {
     		background-color: rgb(0, 114, 255, 0.4) !important;
+    	}
+    	
+    	#inplace-new-comp { margin-top: 1em; }
+    	
+    	#inplace-new-comp .ui-inplace-display{
+    		background-color: #0072FF;
+    		color: white;
+			border-radius: 5px;
+    	}
+    	#inplace-new-comp .ui-inplace-display:active{ box-shadow: none }
+    	
+    	#inplace-new-comp .ui-inplace-save,
+    	#inplace-new-comp .ui-inplace-cancel {
+    		background-color: #00C6FF;
+    		border: none;
+    	}
+    	
+    	#inplace-new-comp .ui-inputfield.ui-state-error{border-color: #ef476f;}
+    	
+    	#sec-form .ui-dialog-content{
+    		font-size: 1.1em;
+    		font-weight: 500;
+    		padding: 2em;
+    	}
+    	
+    	#sec-form .ui-icon.ui-icon-alert.ui-confirm-dialog-severity {display: none;}
+    	
+    	#sec-form .ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left{
+    		background-color: #ff7295;
+    		border: none;
+    	}
+    	
+    	#sec-form .ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{
+    		background-color: #00C6FF;
+    		border: none;
+    	}
+    	
+    	#sec-form .bin{
+    		color: #ff7295 ;
+    		background-color: transparent ;
+    		border: none;
+    	}
+    	
+    	#sec-form .ui-row-editor .ui-icon{
+    		font-size: 1.5em;
+    		color: #0072FF;
+    		background-color: transparent ;
     	}
     
 		

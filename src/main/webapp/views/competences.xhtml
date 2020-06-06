@@ -9,7 +9,7 @@
 	<ui:param name="title" value="Competences" />
 
 	<!-- Tab Index -->
-	<ui:param name="tabIndex" value="4" />
+	<ui:param name="tabIndex" value="3" />
 
 	<!-- Main Content -->
 	<ui:define name="tab-content">
@@ -23,44 +23,45 @@
 		<!-- Section Banner -->
 		<section class="banner-section banner-comps">
 			<h1 class="white mb-1">Competences</h1>
-			<div class="yellow" style="">
+			<p:outputPanel style="display:block" styleClass="yellow" id="compsCountDiv" >
 				<i class="fa fa-fw fa-bolt" /> <strong>#{compsBacking.comps.size()}</strong>
 				competence(s) in total
-			</div>
+			</p:outputPanel>
 			<img src="../resources/images/comp-icon.png" />
 		</section>
 
 		<!-- Main Article -->
 		<article class="tab-article">
 
-			<!-- Section Data table -->
+			<!-- Section Data table  -->
 			<section class="data-table-section shadow-s2">
 				<h3>Competences list and information :</h3>
+
+				<!-- Data table + EDIT -->
 				<h:form id="sec-form">
-					<p:growl id="msgs" showDetail="true"/>
-					
+					<p:growl id="msgs" showDetail="true" />
 					<p:dataTable id="tbl1" var="comp" value="#{compsBacking.comps}"
-						paginator="true" rows="2" widgetVar="compsTable"
+						paginator="true" rows="5" widgetVar="compsTable"
 						filteredValue="#{compsBacking.filteredComps}"
 						editable="true"
+						rowIndexVar="rowIndex"
 						styleClass="shadow-s2">
 						<f:facet name="header">
-        				All available competences
-        				<div class="ui-inputgroup p-grid p-justify-end ">
-
+	        				All available competences
+	        				<div class="ui-inputgroup p-grid p-justify-end ">
 								<p:inputText placeholder="Search"
 									onkeyup="document.getElementById('sec-form:tbl1:clm-name:filter').value = this.value;PF('compsTable').filter();" />
 								<p:commandButton icon="fa fx fa-search"
 									styleClass="white-button" />
 							</div>
 						</f:facet>
-						
+
 						<p:ajax event="rowEdit" listener="#{compsBacking.onRowEdit}"
-        						update="@form:msgs" />
-        				<p:ajax event="rowEditInit" listener="#{compsBacking.onRowEditInit}"
-        						update="@form:msgs" />	
-        				<p:ajax event="rowEditCancel" listener="#{compsBacking.onRowCancel}"
-        						update=":@form:msgs" />
+							update="@form:msgs" />
+						<p:ajax event="rowEditInit"
+							listener="#{compsBacking.onRowEditInit}" update="@form:msgs" />
+						<p:ajax event="rowEditCancel"
+							listener="#{compsBacking.onRowCancel}" update=":@form:msgs" />
 
 						<p:column headerText="Id" sortBy="#{comp.idComp}">
 							<h:outputText value="#{comp.idComp}" />
@@ -87,11 +88,58 @@
 							<h:outputText value="#{comp.tasks.size()}" />
 						</p:column>
 
-						<p:column style="width:35px">
+						<p:column style="width:35px;">
 							<p:rowEditor />
 						</p:column>
 
+						<p:column style="width:35px">
+							<p:commandButton
+								styleClass="bin"
+								onclick="PF('confirmDialog').show()" 
+								icon="fa fx fa-trash" title="Remove from basket">
+								 <f:setPropertyActionListener
+								 	value="#{comp}"
+								 	target="#{compsBacking.selectedComp}"
+								 />
+							</p:commandButton>  
+						</p:column>
+
 					</p:dataTable>
+					
+					<p:confirmDialog
+				        message="Are you sure about deleting this competence ?"
+				        header="Initiating delete process"
+				        severity="alert" widgetVar="confirmDialog">
+				        <p:commandButton
+				        	 value="Delete"
+				        	 icon="fa fx fa-trash"
+				        	 actionListener="#{compsBacking.removeComp(compsBacking.selectedComp)}" 
+				        	 update="@form,compsCountDiv"
+				        	 oncomplete="PF('confirmDialog').hide()"/>
+				        <p:commandButton
+					        value="Cancel"
+					        
+					        onclick="PF('confirmDialog').hide();" type="button" />
+				    </p:confirmDialog>
+
+					<!-- Add new Competence -->
+					<div class="p-grid" id="inplace-new-comp">
+						<div class="p-col-12">
+							<p:inplace id="inplaceSave" editor="true">
+								<f:facet name="output">
+									<i class="fa fx fa-plus " />
+									<span style="font-weight: 500">New Competence</span>
+								</f:facet>
+								<f:facet name="input">
+									<p:ajax event="save" listener="#{compsBacking.addNewComp}"
+										update="@form,compsCountDiv" process="@this" />
+									<p:inputText  value="#{compsBacking.newCompInput}"
+										 label="text" />
+								</f:facet>
+							</p:inplace>
+						</div>
+					</div>
+					
 				</h:form>
 			</section>
 

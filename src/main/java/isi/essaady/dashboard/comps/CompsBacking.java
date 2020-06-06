@@ -25,6 +25,8 @@ public class CompsBacking implements Serializable{
 	private List<Competence> comps;
 	private List<Competence> filteredComps;
 	private Map<Integer, String>  oldNameColumns;
+	private String newCompInput;
+	private Competence selectedComp;
 	
 	@EJB
     private CompetenceBean compBean;
@@ -35,6 +37,7 @@ public class CompsBacking implements Serializable{
         oldNameColumns = new HashMap<Integer, String>();
     }
     
+    
     /**
      * Updates competences. Tests the new value before merging it.
      * It's called when a row is edited.
@@ -44,29 +47,33 @@ public class CompsBacking implements Serializable{
     public void onRowEdit(RowEditEvent<Competence> event) {
     	int compId = event.getObject().getIdComp();
     	String oldValue = oldNameColumns.get(compId);
-    	String newValue = event.getObject().getName().trim();
     	
-    	if(!newValue.equals(oldValue)) {
-    		/* Testing the new edited value*/
-	    	for (Competence comp : comps) {
-				if(comp.getName().equalsIgnoreCase(newValue) && comp.getIdComp()!=compId) {
-					event.getObject().setName(oldValue);
-					FacesMessage msg = new FacesMessage(
-							FacesMessage.SEVERITY_ERROR,
-							"Error", "Competance already exists");
-		            FacesContext.getCurrentInstance().addMessage(null, msg);
-					return;
-				}
-			}
-	    	
-	    	/* Tests passed : Save changes to DB*/
-	    	compBean.updateComp(event.getObject());
-	    	FacesMessage msg = new FacesMessage(
-	    			"Competence Edited",
-	    			"The new value '"+ newValue + "' is successfully saved.");
-	        FacesContext.getCurrentInstance().addMessage(null, msg);
-    	}   
+    	if(event.getObject().getName()==null) {
+    		event.getObject().setName(oldValue);
+    		addMessage(FacesMessage.SEVERITY_WARN,"Warning","A value must be given.");
+			return;
+    	}
+    	else {
+        	String newValue = event.getObject().getName().trim();
+        	if(!newValue.equals(oldValue)) {
+        		/* Testing the new edited value*/
+    	    	for (Competence comp : comps) {
+    				if(comp.getName().equalsIgnoreCase(newValue) && comp.getIdComp()!=compId) {
+    					event.getObject().setName(oldValue);
+    					addMessage(FacesMessage.SEVERITY_ERROR,"Error",
+    							"Competence already exists");
+    					return;
+    				}
+    			}
+    	    	
+    	    	/* Tests passed : Save changes to DB*/
+    	    	compBean.updateComp(event.getObject());
+    	    	addMessage(FacesMessage.SEVERITY_INFO,"Competence Edited",
+    	    			"The new value '"+ newValue + "' is successfully saved.");	
+        	}   		
+    	}
     }
+    
     
     /**
      * Pushes the old column value to the oldNameColumns map.
@@ -76,8 +83,9 @@ public class CompsBacking implements Serializable{
      */
     public void onRowEditInit(RowEditEvent<Competence> event) {
     	this.oldNameColumns
-    		.put(event.getObject().getIdComp(), event.getObject().getName());
+    		.put(event.getObject().getIdComp(), event.getObject().getName().trim());
     }
+    
     
     /**
      * Pops the old column value from the oldNameColumns map.
@@ -89,8 +97,61 @@ public class CompsBacking implements Serializable{
     	this.oldNameColumns
 			.remove(event.getObject().getIdComp());
     	
-        FacesMessage msg = new FacesMessage("Edit Cancelled", "No changes tracked");
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+    	addMessage(FacesMessage.SEVERITY_INFO,"Edit Cancelled", "No changes tracked");
+    }
+    
+    
+    /**
+     * Adds a new row competence.
+     * 
+     */
+    public void addNewComp() {
+    	if(newCompInput==null) {
+    		addMessage(FacesMessage.SEVERITY_WARN,"Warning", "A value must be given.");
+			return;
+    	}
+    	else {
+    		/* Test if new comp already exist */
+        	newCompInput = newCompInput.trim();
+        	for (Competence comp : comps) {
+    			if(comp.getName().equalsIgnoreCase(newCompInput)){
+    				addMessage(FacesMessage.SEVERITY_ERROR, "Error",
+    						"Competance already exists");
+    				return;
+    			}
+    		}
+        	/* If test passes, persist the new competence */
+            Competence newComp = new Competence(newCompInput);
+            compBean.createComp(newComp);
+            comps = compBean.getAllComps();
+            addMessage(FacesMessage.SEVERITY_INFO, "New Competence added",
+            		"The new competence '"+ newCompInput + "' is added successfully.");
+    	}	
+    }
+    
+    
+    /**
+     * Removes a selected row competence.
+     * 
+     * @param comp	Selected competence.
+     */
+    public void removeComp(Competence comp) {
+    	compBean.deleteComp(comp);
+    	comps.remove(comp);
+    	addMessage(FacesMessage.SEVERITY_INFO, "Competence Deleted",
+    			"Competence '"+comp.getName()+"' is successfully deleted.");
+    }
+    
+    /**
+     * Displays the Faces message. This is just a helper method
+     * 
+     * @param severity	The FacesMessage sevirity constant.
+     * @param summary	Message summary.
+     * @param detail	Message detail.
+     */
+    public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
+        FacesMessage message = new FacesMessage(severity, summary, detail);
+        FacesContext.getCurrentInstance().addMessage(null, message);
     }
     
     
@@ -113,7 +174,25 @@ public class CompsBacking implements Serializable{
 		this.filteredComps = filteredComps;
 	}
     
-	 public Map<Integer, String> getOldNameColumns() {
+	public Map<Integer, String> getOldNameColumns() {
 			return this.oldNameColumns;
-		}
+	}
+	
+	public String getNewCompInput() {
+		return this.newCompInput;
+	}
+	
+	public void setNewCompInput(String newCompInput) {
+		this.newCompInput = newCompInput;
+	}
+
+	public Competence getSelectedComp() {
+		return selectedComp;
+	}
+
+	public void setSelectedComp(Competence selectedComp) {
+		this.selectedComp = selectedComp;
+	}
+	
+	
 }

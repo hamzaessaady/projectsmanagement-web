@@ -8,6 +8,8 @@ public class MainTest {
 		//dumpEvents(new org.primefaces.component.inputtext.InputText());
         //dumpEvents(new org.primefaces.component.autocomplete.AutoComplete());
         dumpEvents(new org.primefaces.component.datatable.DataTable());
+		
+		System.out.println(org.hibernate.Version.getVersionString());
 	}
 	
 	private static void dumpEvents(UIComponentBase comp) {
