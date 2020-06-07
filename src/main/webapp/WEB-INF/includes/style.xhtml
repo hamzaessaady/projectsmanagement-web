@@ -193,12 +193,7 @@
 		.ui-tabmenuitem:active {
 			opacity: 1 !important;
 		}
-
-		/* .ui-tabmenuitem.ui-state-default.ui-state-active.ui-corner-top.ui-tabmenuitem-hasicon {
-			opacity: 1 !important;
-			background-color: white !important;
-			border-color: white !important;
-		} */
+		
 		.ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem.ui-state-active {
 			opacity: 1 !important;
 			background-color: white !important;
@@ -377,6 +372,146 @@
     		text-decoration: underline;
     		margin:0;
     		padding:0;
+    	}
+    	
+    	
+    	/* ************ DASHBOARD-COMPS ************ */
+    	
+    	/* Banner */
+    	
+    	.banner-section * { margin:0; }
+    	
+    	.banner-section {
+    		position: relative;
+    		margin: 0;
+    		padding: 2em;
+    		width: 100%;
+    		height: 20vh;
+    		-moz-box-shadow: 0 6px 3px -6px #777;
+			-webkit-box-shadow: inset 0 6px 3px -6px #777;
+			box-shadow: inset 0 7px 3px -6px #777;
+    	}
+    	
+    	.banner-section img {
+			position: absolute;
+			right: 0;
+			width: 120px;
+			bottom: 0px;
+		}
+    	
+    	.banner-section h1 { margin-bottom: 1em;}
+    	
+    	.banner-comps {
+    		background: linear-gradient(240deg, #4b7ecf 0%, #8e70ee 100%);
+    	}
+    	
+    	/* Data table section */
+    	.data-table-section {
+    		background-color: white;
+    		padding: 0.1em 2em 1em 2em;
+    	}
+    	
+    	.data-table-section .ui-datatable-header.ui-widget-header.ui-corner-top {
+    		color: white;
+    		background-color: #00C6FF;
+    	}
+    	
+    	.data-table-section .ui-paginator.ui-paginator-top.ui-widget-header,
+    	.data-table-section .ui-paginator.ui-paginator-bottom.ui-widget-header{
+    		background-color: #0072FF ;
+    		border: none;
+    		color: white;
+    	}
+    	
+    	.data-table-section .ui-paginator.ui-paginator-top.ui-widget-header > a,
+    	.data-table-section .ui-paginator.ui-paginator-bottom.ui-widget-header > a,
+    	.data-table-section .ui-paginator-page.ui-state-default.ui-corner-all{
+    		color: white;
+    	}
+    	
+    	.data-table-section .ui-paginator.ui-paginator-top.ui-widget-header > a:hover,
+    	.data-table-section .ui-paginator.ui-paginator-bottom.ui-widget-header > a:hover{
+    		background-color: #0072FF;
+		    color: #FFE32C;
+    	}
+    	
+    	.data-table-section .ui-paginator-page.ui-state-default.ui-state-active.ui-corner-all,
+    	.data-table-section .ui-paginator-page.ui-state-default.ui-corner-all:hover{
+    		background-color: #0072FF;
+		    color: #FFE32C ;
+		    font-weight: bold;
+    	}
+    	
+    	.data-table-section td{font-weight: 500;}
+    	
+    	.ui-state-default.ui-sortable-column.ui-state-active {
+    		background-color: #eaeaea;
+    		color: black;
+    	}
+    	
+    	.white-button.ui-button.ui-state-default {
+	        background-color: #ffffff;
+	        color: #222222;
+	        border-color: #d6d6d6;
+    	}
+    	
+    	.ui-datatable .ui-column-filter[id='sec-form:tbl1:clm-name:filter'] { display: none; }
+    
+    	.ui-datatable .ui-datatable-data>tr.ui-state-highlight {
+    		background-color: rgb(0, 114, 255, 0.4) !important;
+    	}
+    	
+    	#inplace-new-comp { margin-top: 1em; }
+    	
+    	#inplace-new-comp .ui-inplace-display{
+    		background-color: #0072FF;
+    		color: white;
+			border-radius: 5px;
+    	}
+    	#inplace-new-comp .ui-inplace-display:active{ box-shadow: none }
+    	
+    	#inplace-new-comp .ui-inplace-save,
+    	#inplace-new-comp .ui-inplace-cancel {
+    		background-color: #00C6FF;
+    		border: none;
+    	}
+    	
+    	#inplace-new-comp .ui-inputfield.ui-state-error{border-color: #ef476f;}
+    	
+    	#sec-form .ui-dialog-content{
+    		font-size: 1.1em;
+    		font-weight: 500;
+    		padding: 2em;
+    	}
+    	
+    	#sec-form .ui-icon.ui-icon-alert.ui-confirm-dialog-severity {display: none;}
+    	
+    	#sec-form .ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left{
+    		background-color: #ff7295;
+    		border: none;
+    	}
+    	
+    	#sec-form .ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{
+    		background-color: #00C6FF;
+    		border: none;
+    	}
+    	
+    	#sec-form .bin{
+    		color: #ff7295 ;
+    		background-color: transparent ;
+    		border: none;
+    	}
+    	
+    	#sec-form .ui-row-editor .ui-icon{
+    		font-size: 1.5em;
+    		color: #0072FF;
+    		background-color: transparent ;
+    	}
+    	
+    	.comps-chart-section {
+    		margin-top: 1.5em;
+    		background-color: white;
+    		padding: 0.1em 2em 1em 2em;
     	}
     
 		

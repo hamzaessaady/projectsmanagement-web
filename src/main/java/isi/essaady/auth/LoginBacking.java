@@ -15,6 +15,7 @@ import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.SecurityContext;
 import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -90,6 +91,17 @@ public class LoginBacking  implements Serializable {
                 AuthenticationParameters.withParams()
                 						.newAuthentication(isNew)
                 						.credential(credentials));
+    }
+	
+	/*
+	 * logout() method
+	 * TODO: JAVA DOC
+	 * */
+	public String logout() throws ServletException {
+		HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
+        request.logout();
+        request.getSession().invalidate();
+        return "/index.xhtml?faces-redirect=true";
     }
 	
 	/* Default methods*/
