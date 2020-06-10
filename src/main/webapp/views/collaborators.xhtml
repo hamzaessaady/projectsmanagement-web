@@ -69,14 +69,15 @@
 							oncomplete="materialAvatar()" />
 						<p:ajax event="sort" oncomplete="materialAvatar()" />
 						<p:ajax event="filter" oncomplete="materialAvatar()" />
-
+						<p:ajax event="page" oncomplete="materialAvatar()" />
 
 						<p:column style="width:40px">
 							<div class="md-avatar-circle avatar-circle">
 								#{collab.lastName} #{collab.firstName}</div>
 						</p:column>
 
-						<p:column id="clm-name" headerText="Full name"
+						<p:column headerText="Full name"
+							id="clm-name" style="width:15%;" 
 							filterBy="#{collab.lastName} #{collab.firstName}"
 							filterMatchMode="contains"
 							sortBy="#{collab.lastName} #{collab.firstName}">
@@ -95,8 +96,8 @@
 							</p:cellEditor>
 						</p:column>
 
-						<p:column style="width:12%;" headerText="Gender"
-							sortBy="#{collab.gender}">
+						<p:column headerText="Gender"
+							style="width:12%;" sortBy="#{collab.gender}">
 							<p:cellEditor>
 								<f:facet name="output">
 									<i class="fa #{collab.gender eq 'f' ? 'fa-venus' : 'fa-mars'}" />
@@ -111,8 +112,8 @@
 							</p:cellEditor>
 						</p:column>
 
-						<p:column style="width:30%;" headerText="Email"
-							sortBy="#{collab.email}">
+						<p:column headerText="Email"
+							style="width:25%;" sortBy="#{collab.email}">
 							<p:cellEditor>
 								<f:facet name="output">
 									<h:outputText value="#{collab.email}" />
@@ -124,8 +125,9 @@
 							</p:cellEditor>
 						</p:column>
 
-						<p:column id="clmn-comps" style="width:18%;"
-							headerText="Competences" sortBy="#{collab.competences.size()}">
+						<p:column headerText="Competences"
+							 id="clmn-comps" style="width:18%;"
+							 sortBy="#{collab.competences.size()}">
 							<p:cellEditor>
 								<f:facet name="output">
 									<h:outputText value="0"
@@ -163,7 +165,7 @@
 							<p:overlayPanel  id="tasksPanel" for="tasksLink" hideEffect="fade"
 								dynamic="true" style="width:60%">
 								<p:dataTable var="plan" value="#{collab.collabTaskPlans}"
-									rows="5" paginator="true">
+									rows="5" paginator="true" paginatorAlwaysVisible="false">
 									<p:column headerText="Task">
 										<h:outputText value="#{plan.task.title}" />
 									</p:column>
@@ -183,8 +185,34 @@
 						<p:column style="width:35px;">
 							<p:rowEditor />
 						</p:column>
+						
+						<p:column style="width:35px">
+							<p:commandButton
+								styleClass="bin"
+								onclick="PF('confirmDialog').show()" 
+								icon="fa fx fa-trash" title="Remove">
+								 <f:setPropertyActionListener
+								 	value="#{collab}"
+								 	target="#{collabsBacking.selectedCollab}"/>
+							</p:commandButton>  
+						</p:column>
 
 					</p:dataTable>
+					
+					<p:confirmDialog
+				        message="Are you sure about deleting this Collaborator ?"
+				        header="Initiating delete process"
+				        severity="alert" widgetVar="confirmDialog">
+				        <p:commandButton
+				        	 value="Delete"
+				        	 icon="fa fx fa-trash"
+				        	 actionListener="#{collabsBacking.removeCollab(collabsBacking.selectedCollab)}" 
+				        	 update="@form,collabsCountDiv"
+				        	 oncomplete="PF('confirmDialog').hide();materialAvatar()"/>
+				        <p:commandButton
+					        value="Cancel"
+					        onclick="PF('confirmDialog').hide()" type="button" />
+				    </p:confirmDialog>
 
 				</h:form>
 
@@ -196,7 +224,8 @@
 							onclick="PF('dlg').show();" />
 					</p:outputPanel>
 
-					<p:dialog styleClass="dialogAddCollab" header="Add new collaborator" widgetVar="dlg" 
+					<p:dialog styleClass="dialogAddCollab" id="dlgForm"
+						header="Add new collaborator" widgetVar="dlg" 
 						modal="true" draggable="false" resizable="false" width="70vw">
 						<p:outputPanel class="pt-1" style="display:block;font-size: 1.2em;">
 						<h:outputText
@@ -263,14 +292,13 @@
 									id="submitAddCollabForm" update="errorMsgs"
 									action="#{collabsBacking.addNewCollab}"
 									style="width:100%;border: none;"
-									validateClient="true" ajax="false"
-								/>
- 
+									validateClient="true" ajax="false"/>
 							</div>
 							
 						</div>
 					</p:dialog>
 				</h:form>
+				
 			</section>
 		</article>
 

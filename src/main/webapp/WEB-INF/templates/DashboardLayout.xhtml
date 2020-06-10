@@ -10,6 +10,7 @@
     </ui:define>
     
     <ui:define name="content">
+        <!-- Tab content -->
         <p:tabMenu activeIndex="#{tabIndex}">
 			<p:menuitem value="DASHBOARD"  outcome="dashboard.xhtml" icon="fa fa-fw fa-dashboard"/>
 			<p:menuitem value="PROJECTS" outcome="/index.xhtml"  icon="fa fa-fw fa-code-fork"/>
@@ -17,7 +18,15 @@
 			<p:menuitem value="COMPETENCES" outcome="competences.xhtml" icon="fa fa-fw fa-cogs" />
 		</p:tabMenu>
 		<ui:insert name="tab-content" />
-    </ui:define>
+		
+		 <!-- Spinner -->
+		<p:ajaxStatus styleClass="spinner">
+			<f:facet name="start">
+				<i class="pi pi-spin pi-spinner" style="font-size: 4em"></i>
+			</f:facet>
+		</p:ajaxStatus>
+	</ui:define>
+    
     
     <ui:define name="footer">
     	<ui:include src="/WEB-INF/includes/footerDashboard.xhtml" />
