@@ -1,0 +1,307 @@
+<ui:composition template="/WEB-INF/templates/DashboardLayout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!-- Page Title -->
+	<ui:param name="title" value="Collaborators" />
+
+	<!-- Tab Index -->
+	<ui:param name="tabIndex" value="2" />
+
+	<!-- Main Content -->
+	<ui:define name="tab-content">
+
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="../index.xhtml" />
+			<p:menuitem value="Dashboard" url="dashboard.xhtml" />
+			<p:menuitem value="Collaborators" url="collaborators.xhtml" />
+		</p:breadCrumb>
+
+		<!-- Section Banner -->
+		<section class="banner-section banner-collabs">
+			<h1 class="white mb-1">Collaborators</h1>
+			<p:outputPanel style="display:block" styleClass="yellow"
+				id="collabsCountDiv">
+				<i class="fa fa-fw fa-bolt" />
+				<strong>#{collabsBacking.collabs.size()}</strong>
+				collaborator(s) in total
+			</p:outputPanel>
+			<img src="../resources/images/collab-icon.png" />
+		</section>
+
+		<!-- Main Article -->
+		<article class="tab-article">
+
+			<!-- Section Data table  -->
+			<section class="data-table-section shadow">
+				<h3>Collaborators list and information :</h3>
+
+				<!-- Data table + EDIT -->
+				<h:form id="sec-form">
+					<p:growl id="msgs" showDetail="true" />
+					<p:dataTable id="tbl1" var="collab"
+						value="#{collabsBacking.collabs}" paginator="true" rows="10"
+						widgetVar="collabsTable" rowIndexVar="index"
+						filteredValue="#{collabsBacking.filteredCollabs}" editable="true"
+						styleClass="shadow-s2 centered-columns" style="width:100%">
+						<f:facet name="header">
+	        				All available collaborators
+	        				<div class="ui-inputgroup p-grid p-justify-end ">
+								<p:inputText placeholder="Search"
+									onkeyup="document.getElementById('sec-form:tbl1:clm-name:filter').value = this.value;PF('collabsTable').filter();" />
+								<p:commandButton icon="fa fx fa-search"
+									styleClass="white-button" />
+							</div>
+						</f:facet>
+
+						<f:attribute name="index" value="#{index}" />
+
+						<p:ajax event="rowEdit" listener="#{collabsBacking.onRowEdit}"
+							update="@form:msgs" oncomplete="materialAvatar()" />
+						<p:ajax event="rowEditInit"
+							listener="#{collabsBacking.onRowEditInit}" update=":@form:msgs"
+							async="true" />
+						<p:ajax event="rowEditCancel"
+							listener="#{collabsBacking.onRowCancel}" update=":@form:msgs"
+							oncomplete="materialAvatar()" />
+						<p:ajax event="sort" oncomplete="materialAvatar()" />
+						<p:ajax event="filter" oncomplete="materialAvatar()" />
+						<p:ajax event="page" oncomplete="materialAvatar()" />
+
+						<p:column style="width:40px">
+							<div class="md-avatar-circle avatar-circle">
+								#{collab.lastName} #{collab.firstName}</div>
+						</p:column>
+
+						<p:column headerText="Full name"
+							id="clm-name" style="width:15%;" 
+							filterBy="#{collab.lastName} #{collab.firstName}"
+							filterMatchMode="contains"
+							sortBy="#{collab.lastName} #{collab.firstName}">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{collab.lastName} #{collab.firstName}" />
+								</f:facet>
+								<f:facet name="input">
+									<h:inputText id="lNameInput"
+										style="width:80%; margin:5px 0; padding:5px;"
+										value="#{collab.lastName}" />
+									<h:inputText id="fNameInput"
+										style="width:80%; margin:5px 0; padding:5px;"
+										value="#{collab.firstName}" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Gender"
+							style="width:12%;" sortBy="#{collab.gender}">
+							<p:cellEditor>
+								<f:facet name="output">
+									<i class="fa #{collab.gender eq 'f' ? 'fa-venus' : 'fa-mars'}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:selectOneButton id="genderRadio" value="#{collab.gender}"
+										unselectable="false">
+										<f:selectItem itemLabel="M" itemValue="m" />
+										<f:selectItem itemLabel="F" itemValue="f" />
+									</p:selectOneButton>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Email"
+							style="width:25%;" sortBy="#{collab.email}">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{collab.email}" />
+								</f:facet>
+								<f:facet name="input">
+									<h:inputText id="emailInput" style="padding:5px"
+										value="#{collab.email}" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Competences"
+							 id="clmn-comps" style="width:18%;"
+							 sortBy="#{collab.competences.size()}">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="0"
+										rendered="#{collab.competences.size() eq 0}" />
+									<p:commandLink id="compsLink" type="button"
+										value="#{collab.competences.size()}"
+										rendered="#{collab.competences.size() gt 0}">
+									</p:commandLink>
+									<p:overlayPanel id="compsPanel" for="compsLink"
+										hideEffect="fade" modal="false">
+										<p:dataList value="#{collab.competences}" var="comp">
+    										#{comp.name}
+										</p:dataList>
+									</p:overlayPanel>
+								</f:facet>
+								<f:facet name="input">
+									<p:selectCheckboxMenu id="menuSelectComps"
+										value="#{collabsBacking.compsSelect}" var="c"
+										label="competences" dynamic="true" panelStyle="width:250px"
+										immediate="true" filter="true" filterMatchMode="startsWith">
+										<f:selectItems value="#{collabsBacking.comps}" var="comp"
+											itemValue="#{comp.name}" itemLabel="#{comp.name}" />
+									</p:selectCheckboxMenu>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Tasks"
+							sortBy="#{collab.collabTaskPlans.size()}">
+							<h:outputText value="0"
+								rendered="#{collab.collabTaskPlans.size() eq 0}" />
+							<p:commandLink id="tasksLink" type="button"
+								value="#{collab.collabTaskPlans.size()}"
+								rendered="#{collab.collabTaskPlans.size() gt 0}" />
+							<p:overlayPanel  id="tasksPanel" for="tasksLink" hideEffect="fade"
+								dynamic="true" style="width:60%">
+								<p:dataTable var="plan" value="#{collab.collabTaskPlans}"
+									rows="5" paginator="true" paginatorAlwaysVisible="false">
+									<p:column headerText="Task">
+										<h:outputText value="#{plan.task.title}" />
+									</p:column>
+									<p:column headerText="Project">
+										<h:outputText value="#{plan.task.project.title}" />
+									</p:column>
+									<p:column headerText="Assigned hours">
+										<h:outputText value="#{plan.assignedHours}" />
+									</p:column>
+									<f:facet name="footer" style="text-align:right;">
+        								Total assigned hours : #{collabsBacking.totalAssignedHours(collab.idCollab)} hrs
+   									</f:facet>
+								</p:dataTable>
+							</p:overlayPanel>
+						</p:column>
+
+						<p:column style="width:35px;">
+							<p:rowEditor />
+						</p:column>
+						
+						<p:column style="width:35px">
+							<p:commandButton
+								styleClass="bin"
+								onclick="PF('confirmDialog').show()" 
+								icon="fa fx fa-trash" title="Remove">
+								 <f:setPropertyActionListener
+								 	value="#{collab}"
+								 	target="#{collabsBacking.selectedCollab}"/>
+							</p:commandButton>  
+						</p:column>
+
+					</p:dataTable>
+					
+					<p:confirmDialog
+				        message="Are you sure about deleting this Collaborator ?"
+				        header="Initiating delete process"
+				        severity="alert" widgetVar="confirmDialog">
+				        <p:commandButton
+				        	 value="Delete"
+				        	 icon="fa fx fa-trash"
+				        	 actionListener="#{collabsBacking.removeCollab(collabsBacking.selectedCollab)}" 
+				        	 update="@form,collabsCountDiv"
+				        	 oncomplete="PF('confirmDialog').hide();materialAvatar()"/>
+				        <p:commandButton
+					        value="Cancel"
+					        onclick="PF('confirmDialog').hide()" type="button" />
+				    </p:confirmDialog>
+
+				</h:form>
+
+				<!-- Add new Collaborator -->
+				<h:form id="formAddCollab">
+					<p:outputPanel styleClass="mt-1" style="display:block">
+						<p:commandButton value="New Collaborator" type="button"
+							icon="fa fa-plus" styleClass="addCollabBtn" 
+							onclick="PF('dlg').show();" />
+					</p:outputPanel>
+
+					<p:dialog styleClass="dialogAddCollab" id="dlgForm"
+						header="Add new collaborator" widgetVar="dlg" 
+						modal="true" draggable="false" resizable="false" width="70vw">
+						<p:outputPanel class="pt-1" style="display:block;font-size: 1.2em;">
+						<h:outputText
+							value="Please enter the new collaborator's information :"/>
+						</p:outputPanel>
+						<div>
+							<p:messages id="errorMsgs" closable="true" />
+						</div>
+						<div id="newCollabForm" class="p-grid p-justify-around">
+							
+							<div class="p-col-6 ui-fluid  mb-1">
+								<span class="ui-float-label">
+									<p:inputText id="fNameInput"
+										value="#{collabsBacking.fNameInput}"
+										required="true"
+										requiredMessage="First name input is required."/>
+									<p:outputLabel for="@previous" value="First name" />
+								</span>
+							</div>
+							<div class="p-col-6 ui-fluid">
+								<span class="ui-float-label">
+									<p:inputText id="lNameInput"
+										value="#{collabsBacking.lNameInput}"
+										required="true"
+										requiredMessage="Last name input is required."/>
+									<p:outputLabel for="@previous" value="Last name" />
+								</span>
+							</div>
+							<div class="p-col-6 ui-fluid">
+								<span class="ui-float-label">
+									<p:inputText id="emailInput"
+										value="#{collabsBacking.emailInput}"
+										required="true"
+										requiredMessage="Email input is required."
+										validatorMessage="Invalid email adress.">
+										 <f:validateRegex
+										 	pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+									</p:inputText>
+									<p:outputLabel for="@previous" value="Email" />
+								</span>
+							</div>
+							
+							<div class="p-col-3 ui-fluid">
+								<p:selectCheckboxMenu id="menuSelectComps"
+									value="#{collabsBacking.newCompsSelect}" var="newComp"
+									label="competences" dynamic="true" panelStyle="width:250px"
+									immediate="true" filter="true" filterMatchMode="startsWith">
+									<f:selectItems 
+										value="#{collabsBacking.comps}" var="comp"
+										itemValue="#{comp}" itemLabel="#{comp.name}" />
+								</p:selectCheckboxMenu>
+							</div>
+							<div class="p-col-3 ui-fluid">
+								<p:selectOneRadio id="genderRadio"
+            						value="#{collabsBacking.genderRadio}"
+            						unselectable="true" required="true"
+            						requiredMessage="Gender radio is required.">
+            						<f:selectItem itemLabel="Female" itemValue="f" />
+						            <f:selectItem itemLabel="Male" itemValue="m" />
+						        </p:selectOneRadio>
+							</div>
+							<div class="p-col-6 mt-1">
+								<p:commandButton value="Submit"
+									id="submitAddCollabForm" update="errorMsgs"
+									action="#{collabsBacking.addNewCollab}"
+									style="width:100%;border: none;"
+									validateClient="true" ajax="false"/>
+							</div>
+							
+						</div>
+					</p:dialog>
+				</h:form>
+				
+			</section>
+		</article>
+
+	</ui:define>
+
+</ui:composition>
