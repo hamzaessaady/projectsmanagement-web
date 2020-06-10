@@ -9,13 +9,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.NotNull;
 
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
@@ -30,15 +31,25 @@ import isi.essaady.helpers.Helpers;
 @ViewScoped
 public class CollabsBacking implements Serializable{
 	private static final long serialVersionUID = 1L;
-	private static final Pattern EMAIL_PATTERN =
-			   Pattern.compile("[\\w\\.-]*[a-zA-Z0-9_]@[\\w\\.-]*[a-zA-Z0-9]\\.[a-zA-Z][a-zA-Z\\.]*[a-zA-Z]");
+	private static final java.util.regex.Pattern EMAIL_PATTERN =
+			java.util.regex.Pattern.compile("[\\w\\.-]*[a-zA-Z0-9_]@[\\w\\.-]*[a-zA-Z0-9]\\.[a-zA-Z][a-zA-Z\\.]*[a-zA-Z]");
 	
 	private List<Collaborator> collabs;
 	private List<Competence> comps;
 	private List<Collaborator> filteredCollabs;
-	private String genderRadio;
 	private List<String> compsSelect;
 	private Map<Integer, Collaborator>  oldValuesColumns;
+	
+	@NotNull
+	private String fNameInput;
+	@NotNull
+	private String lNameInput;
+	@NotNull
+	@Pattern (regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
+	private String emailInput;
+	@NotNull
+	private String genderRadio;
+	private Set<Competence> newCompsSelect;
 
 	@EJB
     private CollaboratorBean collabBean;
@@ -192,6 +203,25 @@ public class CollabsBacking implements Serializable{
     	return sum.get();
     }
     
+    /**
+     * addNewCollab
+     * TODO JAVA DOC
+     */
+    public void addNewCollab() {
+    	//Create new Collab object
+    	Collaborator newCollab = new Collaborator();
+    	newCollab.setFirstName(fNameInput.trim());
+    	newCollab.setLastName(lNameInput.trim());
+    	newCollab.setEmail(emailInput.trim().toLowerCase());
+    	newCollab.setGender(genderRadio.trim());
+    	newCollab.setCompetences(newCompsSelect);
+    	// Save to DB
+    	collabBean.createCollab(newCollab);
+    	this.collabs = collabBean.getAllCollabs();
+    	Helpers.addMessage(FacesMessage.SEVERITY_INFO, "New collaborator added",
+        		"The new collaborator '"+ fNameInput + " " + lNameInput + "' is added successfully.");
+    }
+    
     
     /*
      * GETTERS - SETTERS
@@ -253,65 +283,45 @@ public class CollabsBacking implements Serializable{
 	}
 
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((collabs == null) ? 0 : collabs.hashCode());
-		result = prime * result + ((comps == null) ? 0 : comps.hashCode());
-		result = prime * result + ((compsSelect == null) ? 0 : compsSelect.hashCode());
-		result = prime * result + ((filteredCollabs == null) ? 0 : filteredCollabs.hashCode());
-		result = prime * result + ((genderRadio == null) ? 0 : genderRadio.hashCode());
-		result = prime * result + ((oldValuesColumns == null) ? 0 : oldValuesColumns.hashCode());
-		return result;
+	public String getfNameInput() {
+		return fNameInput;
 	}
 
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		CollabsBacking other = (CollabsBacking) obj;
-		if (collabs == null) {
-			if (other.collabs != null)
-				return false;
-		} else if (!collabs.equals(other.collabs))
-			return false;
-		if (comps == null) {
-			if (other.comps != null)
-				return false;
-		} else if (!comps.equals(other.comps))
-			return false;
-		if (compsSelect == null) {
-			if (other.compsSelect != null)
-				return false;
-		} else if (!compsSelect.equals(other.compsSelect))
-			return false;
-		if (filteredCollabs == null) {
-			if (other.filteredCollabs != null)
-				return false;
-		} else if (!filteredCollabs.equals(other.filteredCollabs))
-			return false;
-		if (genderRadio == null) {
-			if (other.genderRadio != null)
-				return false;
-		} else if (!genderRadio.equals(other.genderRadio))
-			return false;
-		if (oldValuesColumns == null) {
-			if (other.oldValuesColumns != null)
-				return false;
-		} else if (!oldValuesColumns.equals(other.oldValuesColumns))
-			return false;
-		return true;
+	public String getlNameInput() {
+		return lNameInput;
+	}
+
+
+	public String getEmailInput() {
+		return emailInput;
+	}
+
+
+	public void setfNameInput(String fNameInput) {
+		this.fNameInput = fNameInput;
+	}
+
+
+	public void setlNameInput(String lNameInput) {
+		this.lNameInput = lNameInput;
+	}
+
+
+	public void setEmailInput(String emailInput) {
+		this.emailInput = emailInput;
+	}
+
+
+	public Set<Competence> getNewCompsSelect() {
+		return newCompsSelect;
+	}
+
+
+	public void setNewCompsSelect(Set<Competence> newCompsSelect) {
+		this.newCompsSelect = newCompsSelect;
 	}
 	
 	
-	
-	
-	
-   
+
 }

@@ -43,7 +43,7 @@
 				<h:form id="sec-form">
 					<p:growl id="msgs" showDetail="true" />
 					<p:dataTable id="tbl1" var="collab"
-						value="#{collabsBacking.collabs}" paginator="true" rows="5"
+						value="#{collabsBacking.collabs}" paginator="true" rows="10"
 						widgetVar="collabsTable" rowIndexVar="index"
 						filteredValue="#{collabsBacking.filteredCollabs}" editable="true"
 						styleClass="shadow-s2 centered-columns" style="width:100%">
@@ -160,7 +160,7 @@
 							<p:commandLink id="tasksLink" type="button"
 								value="#{collab.collabTaskPlans.size()}"
 								rendered="#{collab.collabTaskPlans.size() gt 0}" />
-							<p:overlayPanel id="tasksPanel" for="tasksLink" hideEffect="fade"
+							<p:overlayPanel  id="tasksPanel" for="tasksLink" hideEffect="fade"
 								dynamic="true" style="width:60%">
 								<p:dataTable var="plan" value="#{collab.collabTaskPlans}"
 									rows="5" paginator="true">
@@ -185,6 +185,91 @@
 						</p:column>
 
 					</p:dataTable>
+
+				</h:form>
+
+				<!-- Add new Collaborator -->
+				<h:form id="formAddCollab">
+					<p:outputPanel styleClass="mt-1" style="display:block">
+						<p:commandButton value="New Collaborator" type="button"
+							icon="fa fa-plus" styleClass="addCollabBtn" 
+							onclick="PF('dlg').show();" />
+					</p:outputPanel>
+
+					<p:dialog styleClass="dialogAddCollab" header="Add new collaborator" widgetVar="dlg" 
+						modal="true" draggable="false" resizable="false" width="70vw">
+						<p:outputPanel class="pt-1" style="display:block;font-size: 1.2em;">
+						<h:outputText
+							value="Please enter the new collaborator's information :"/>
+						</p:outputPanel>
+						<div>
+							<p:messages id="errorMsgs" closable="true" />
+						</div>
+						<div id="newCollabForm" class="p-grid p-justify-around">
+							
+							<div class="p-col-6 ui-fluid  mb-1">
+								<span class="ui-float-label">
+									<p:inputText id="fNameInput"
+										value="#{collabsBacking.fNameInput}"
+										required="true"
+										requiredMessage="First name input is required."/>
+									<p:outputLabel for="@previous" value="First name" />
+								</span>
+							</div>
+							<div class="p-col-6 ui-fluid">
+								<span class="ui-float-label">
+									<p:inputText id="lNameInput"
+										value="#{collabsBacking.lNameInput}"
+										required="true"
+										requiredMessage="Last name input is required."/>
+									<p:outputLabel for="@previous" value="Last name" />
+								</span>
+							</div>
+							<div class="p-col-6 ui-fluid">
+								<span class="ui-float-label">
+									<p:inputText id="emailInput"
+										value="#{collabsBacking.emailInput}"
+										required="true"
+										requiredMessage="Email input is required."
+										validatorMessage="Invalid email adress.">
+										 <f:validateRegex
+										 	pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+									</p:inputText>
+									<p:outputLabel for="@previous" value="Email" />
+								</span>
+							</div>
+							
+							<div class="p-col-3 ui-fluid">
+								<p:selectCheckboxMenu id="menuSelectComps"
+									value="#{collabsBacking.newCompsSelect}" var="newComp"
+									label="competences" dynamic="true" panelStyle="width:250px"
+									immediate="true" filter="true" filterMatchMode="startsWith">
+									<f:selectItems 
+										value="#{collabsBacking.comps}" var="comp"
+										itemValue="#{comp}" itemLabel="#{comp.name}" />
+								</p:selectCheckboxMenu>
+							</div>
+							<div class="p-col-3 ui-fluid">
+								<p:selectOneRadio id="genderRadio"
+            						value="#{collabsBacking.genderRadio}"
+            						unselectable="true" required="true"
+            						requiredMessage="Gender radio is required.">
+            						<f:selectItem itemLabel="Female" itemValue="f" />
+						            <f:selectItem itemLabel="Male" itemValue="m" />
+						        </p:selectOneRadio>
+							</div>
+							<div class="p-col-6 mt-1">
+								<p:commandButton value="Submit"
+									id="submitAddCollabForm" update="errorMsgs"
+									action="#{collabsBacking.addNewCollab}"
+									style="width:100%;border: none;"
+									validateClient="true" ajax="false"
+								/>
+ 
+							</div>
+							
+						</div>
+					</p:dialog>
 				</h:form>
 			</section>
 		</article>
