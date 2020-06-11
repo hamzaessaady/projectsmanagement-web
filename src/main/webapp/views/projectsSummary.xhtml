@@ -1,0 +1,179 @@
+<ui:composition template="/WEB-INF/templates/DashboardLayout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+	<!-- Page Title -->
+	<ui:param name="title" value="Projects" />
+
+	<!-- Tab Index -->
+	<ui:param name="tabIndex" value="1" />
+	
+
+	<!-- Main Content -->
+	<ui:define name="tab-content">
+		<p:importConstants type="isi.essaady.helpers.Constants" var="const" />
+		
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="../index.xhtml" />
+			<p:menuitem value="Dashboard" url="dashboard.xhtml" />
+			<p:menuitem value="Projects" url="projectsSummary.xhtml" />
+		</p:breadCrumb>
+
+		<!-- Section Banner -->
+		<section class="banner-section banner-projs">
+			<h1 class="white mb-1">Projects | Summary</h1>
+			<p:outputPanel style="display:block" styleClass="black"
+				id="projsCountDiv">
+				<i class="fa fa-fw fa-bolt" />
+				<strong>13</strong>
+				project(s) in total
+			</p:outputPanel>
+			<img src="../resources/images/project-icon.png" />
+		</section>
+
+		<!-- Main Article -->
+		<article class="tab-article">
+
+			<!-- Section Data table  -->
+			<section class="data-table-section shadow">
+
+
+				<!-- Projects overview  -->
+				<c:set var="status" value="#{projsSummaryBacking.countProjsByStatus()}" />
+				<div id="projs-overview" class="p-grid mt-1 mb-3">
+					<div class="p-col finished-projs">
+						<span>#{status.get(const.FINISHED)}</span>
+						<span>Finished</span>
+					</div>
+					<div class="p-col inprog-projs">
+						<span>#{status.get(const.IN_PROGRESS)}</span>
+						<span>In Progress</span>
+					</div>
+					<div class="p-col unstarted-projs">
+						<span>#{status.get(const.UNSTARTED)}</span>
+						<span>Unstarted</span>
+					</div>
+				</div>
+				
+				<p:separator />
+				
+				<!-- Add new Project + search -->
+				<h:form id="formAddProj">
+					<div class="mt-1 p-grid" >
+						<div class="p-col">
+							<p:commandButton value="Add Project" type="button"
+								icon="fa fa-plus" styleClass="addCollabBtn" 
+								onclick="PF('dlg').show();" />
+						</div>
+						<div class="ui-inputgroup p-col p-justify-end" >
+							<p:inputText placeholder="Search"
+								onkeyup="document.getElementById('sec-form:tbl1:clm-name:filter').value = this.value;PF('projsTable').filter();" />
+							<p:commandButton icon="fa fx fa-search"
+								styleClass="white-button" />
+						</div>
+					</div>
+					
+					<p:dialog styleClass="dialogAddCollab" id="dlgForm"
+						header="Add new collaborator" widgetVar="dlg" 
+						modal="true" draggable="false" resizable="false" width="70vw">
+				
+					</p:dialog>
+				</h:form>
+				
+				<!-- Data Table -->
+				<h:form id="sec-form">
+					
+					<p:growl id="msgs" showDetail="true" />
+					
+					<p:dataTable id="tbl1"
+						var="proj" value="#{projsSummaryBacking.projs}" 
+						rowIndexVar="index" widgetVar="projsTable" 
+						filteredValue="#{projsSummaryBacking.filteredProjs}"
+						paginator="true" rows="10" editable="true"
+						styleClass="shadow-s2 centered-columns" style="width:100%">
+						<f:attribute name="index" value="#{index}" />
+						
+						<f:facet name="header"> All available projectss	</f:facet>
+						
+						<p:ajax event="rowEdit" update="@form:msgs"
+							listener="#{projsSummaryBacking.onRowEdit}" />
+						<p:ajax event="rowEditInit" update=":@form:msgs" async="true" 
+							listener="#{projsSummaryBacking.onRowEditInit}"/>
+						<p:ajax event="rowEditCancel"  update=":@form:msgs"
+							listener="#{projsSummaryBacking.onRowCancel}"/>
+						
+						<p:column style="width:10px">
+							<h:panelGroup rendered="#{projsSummaryBacking.isFinished(proj)}"> 
+								<i class="fa fa-circle  yellow-crayola"/>
+							</h:panelGroup>
+							<h:panelGroup rendered="#{projsSummaryBacking.isInProgress(proj)}"> 
+								<i class="fa fa-circle blue-carolina"/>
+							</h:panelGroup>
+							<h:panelGroup rendered="#{projsSummaryBacking.isUnstarted(proj)}"> 
+								<i class="fa fa-circle  orange-coral"/>
+							</h:panelGroup>
+						</p:column>
+						
+						<p:column headerText="Title" style="width:20%"
+							id="clm-name" 
+							filterBy="#{proj.title}" filterMatchMode="contains"
+							sortBy="#{proj.title}">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{proj.title}" />
+								</f:facet>
+								<f:facet name="input">
+									<h:inputText id="titleInput" style="padding:5px;"
+										value="#{proj.title}" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						
+						<p:column headerText="Duration"
+							id="clm-duration" sortBy="#{proj.duration}">
+							<h:outputText value="#{proj.duration}" />
+						</p:column>
+						
+						<p:column headerText="Start date"
+							id="clm-st-date" sortBy="#{proj.startDate}">
+							<h:outputText value="#{proj.startDate}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="End date"
+							id="clm-end-date" sortBy="#{proj.endDate}">
+							<h:outputText value="#{proj.endDate}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Tasks"
+							id="clm-tasks" sortBy="#{proj.tasks.size()}">
+							<h:outputText value="#{proj.tasks.size()}" />
+						</p:column>
+						
+						<p:column headerText="Collabs"
+							id="clm-collabs" sortBy="#{projsSummaryBacking.countCollabs(proj)}">
+							<h:outputText
+								value="#{projsSummaryBacking.countCollabs(proj)}"/>
+						</p:column>
+						
+						<p:column style="width:35px;">
+							<p:rowEditor />
+						</p:column>
+						
+					</p:dataTable>
+						
+				</h:form>
+		
+			</section>
+		</article>
+
+	</ui:define>
+
+</ui:composition>
