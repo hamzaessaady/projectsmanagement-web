@@ -78,9 +78,90 @@
 					</div>
 					
 					<p:dialog styleClass="dialogAddCollab" id="dlgForm"
-						header="Add new collaborator" widgetVar="dlg" 
+						header="Add new project" widgetVar="dlg" 
 						modal="true" draggable="false" resizable="false" width="70vw">
-				
+						
+						<p:outputPanel class="pt-1" style="display:block;font-size: 1.2em;">
+							<h:outputText
+								value="Please enter the new Project's information :"/>
+
+								<h5 class="orange" style="margin:5px">
+									<p:spacer width="30" height="0" />
+									<i class="fa fa-exclamation-circle" />
+									Note : Designated hours are 08h-12h and 14h-18h from
+									Monday to Friday.  
+								</h5>
+
+						</p:outputPanel>
+						
+						<div>
+							<p:messages id="errorMsgs" closable="true" />
+							<p:growl id="msgsBackEnd" globalOnly="true" showDetail="true" />
+						</div>
+						
+						<div id="newProjForm" class="p-grid p-justify-around">
+						
+							<div class="p-col-12 mb-1 ui-fluid">
+								<span class="ui-float-label">
+									<p:inputText id="titleInput"
+										value="#{projsSummaryBacking.titleInput}"
+										required="true"
+										requiredMessage="Title input is required."/>
+									<p:outputLabel for="@previous" value="Title" />
+								</span>
+							</div>
+							<div class="p-col-12 mb-1 ui-fluid">
+								<span class="ui-float-label">
+									<p:inputTextarea id="descInput"
+									 	value="#{projsSummaryBacking.descInput}"
+									 	rows="2" />
+									<p:outputLabel for="@previous" value="Description" /> 
+								</span>
+							</div>
+							<div class="p-col-4">
+								<span class="ui-float-label">
+									<p:spinner id="durationInput"
+										value="#{projsSummaryBacking.durationInput}"
+										min="0" required="true" 
+								 		requiredMessage="Duration input is required."/>
+									<p:outputLabel for="@previous"
+										styleClass="defaultFilledInput"  value="Duration (hrs)" />
+								</span>
+							</div>
+							<div class="p-col-4 p-calendar">
+								 <span class="ui-float-label">
+								 	<p:datePicker id="startDateInput"
+								 		value="#{projsSummaryBacking.startDateInput}"
+								 		required="true" showTime="true"
+								 		requiredMessage="Start Date input is required."
+										disabledDays="#{projsSummaryBacking.disabledDays}"
+								 		/>
+								 	<p:outputLabel for="@previous" 
+								 		styleClass="defaultFilledInput" value="Start date" />
+								 </span>
+							</div>
+							<div class="p-col-4">
+								 <span class="ui-float-label">
+								 	<p:datePicker id="endDateInput"
+								 		value="#{projsSummaryBacking.endDateInput}"
+								 		required="true" showTime="true"
+								 		requiredMessage="Start Date input is required."
+										disabledDays="#{projsSummaryBacking.disabledDays}"
+								 		/>
+								 	<p:outputLabel for="@previous" 
+								 		styleClass="defaultFilledInput" value="End date" />
+								 </span>
+							</div>
+							<div class="p-col-6 mt-1">
+								<p:commandButton value="Submit"
+									id="submitAddProjForm" update="errorMsgs, msgsBackEnd"
+									action="#{projsSummaryBacking.addNewProj}"
+									style="width:100%;border: none;"
+									validateClient="true" ajax="true"
+								/>	
+							</div>
+						</div>
+						
 					</p:dialog>
 				</h:form>
 				

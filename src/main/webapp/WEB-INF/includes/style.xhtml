@@ -177,6 +177,7 @@
 			right:10px;
   			bottom:15px;
   			display:block;
+  			z-index: 100;
 		}
 
 		/* Header */
@@ -553,18 +554,35 @@
 		}
 		
 		/* Add new Collab */
-		#newCollabForm{ padding: 1.5em 1em; }
+		#newCollabForm,
+		#newProjForm{
+			padding: 1.5em 1em;
+		}
 		
 		#newCollabForm .ui-float-label>input:focus~label,
-		#newCollabForm .ui-float-label>input.ui-state-filled~label {
+		#newCollabForm .ui-float-label>input.ui-state-filled~label,
+		#newProjForm .ui-float-label>input:focus~label,
+		#newProjForm .ui-float-label>input.ui-state-filled~label,
+		#newProjForm .ui-float-label>textarea:focus~label,
+		#newProjForm .ui-float-label>textarea.ui-state-filled~label{
 			top: -0.9em;
 			color: #0072FF;
 		}
 
-		#newCollabForm .ui-inputfield.ui-state-error { border: 2px solid #ef476f !important;}
-		#newCollabForm .ui-state-error { color: #ef476f !important;}
+
+		#newCollabForm .ui-inputfield.ui-state-error,
+		#newProjForm .ui-inputfield.ui-state-error {
+			border: 2px solid #ef476f !important;
+		}
+		#newCollabForm .ui-state-error,
+		#newProjForm .ui-state-error{
+			color: #ef476f !important;
+		}
 		
-		#newCollabForm .ui-button-text.ui-c { background-color: #00C6FF;}
+		#newCollabForm .ui-button-text.ui-c,
+		#newProjForm .ui-button-text.ui-c {
+			background-color: #00C6FF;
+		}
 		
 		.dialogAddCollab .ui-dialog-titlebar.ui-widget-header.ui-helper-clearfix.ui-corner-top{
 			border: none;
@@ -590,6 +608,7 @@
     	.banner-projs h1{
     		color: white;
     	}
+    	
     	.banner-section.banner-projs img {
 			position: absolute;
 			right: 0;
@@ -600,7 +619,6 @@
 		#projs-overview span {
 			display: block;
 			text-align: center;
-			
 		}
 		
 		#projs-overview > div > span:first-child{
@@ -617,6 +635,8 @@
 		#projs-overview > div:nth-child(1) > span:first-child { color: #FFCD56; }
 		#projs-overview > div:nth-child(2) > span:first-child { color: #36A2EB; }
 		#projs-overview > div:nth-child(3) > span:first-child { color: #fe875d; }
+		
+		.ui-outputlabel.ui-widget.defaultFilledInput{color: #0072FF;}
 
 	</style>
 
