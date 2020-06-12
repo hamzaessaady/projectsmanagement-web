@@ -29,7 +29,7 @@
 			<p:outputPanel style="display:block" styleClass="black"
 				id="projsCountDiv">
 				<i class="fa fa-fw fa-bolt" />
-				<strong>13</strong>
+				<strong>#{projsSummaryBacking.projs.size()}</strong>
 				project(s) in total
 			</p:outputPanel>
 			<img src="../resources/images/project-icon.png" />
@@ -44,6 +44,7 @@
 
 				<!-- Projects overview  -->
 				<c:set var="status" value="#{projsSummaryBacking.countProjsByStatus()}" />
+				<p:outputPanel style="display:block;" id="projs-overview-output">
 				<div id="projs-overview" class="p-grid mt-1 mb-3">
 					<div class="p-col finished-projs">
 						<span>#{status.get(const.FINISHED)}</span>
@@ -58,6 +59,7 @@
 						<span>Unstarted</span>
 					</div>
 				</div>
+				</p:outputPanel>
 				
 				<p:separator />
 				
@@ -248,7 +250,33 @@
 							<p:rowEditor />
 						</p:column>
 						
+						<p:column style="width:35px">
+							<p:commandButton
+								styleClass="bin"
+								onclick="PF('confirmDialog').show()" 
+								icon="fa fx fa-trash" title="Remove">
+								 <f:setPropertyActionListener
+								 	value="#{proj}"
+								 	target="#{projsSummaryBacking.selectedProj}"/>
+							</p:commandButton>  
+						</p:column>
+						
 					</p:dataTable>
+						
+					<p:confirmDialog
+				        message="Are you sure about deleting this Project ?"
+				        header="Initiating delete process"
+				        severity="alert" widgetVar="confirmDialog">
+				        <p:commandButton
+				        	 value="Delete"
+				        	 icon="fa fx fa-trash"
+				        	 actionListener="#{projsSummaryBacking.removeProj(projsSummaryBacking.selectedProj)}" 
+				        	 update="@form,projsCountDiv,projs-overview-output"
+				        	 oncomplete="PF('confirmDialog').hide()"/>
+				        <p:commandButton
+					        value="Cancel"
+					        onclick="PF('confirmDialog').hide()" type="button" />
+				    </p:confirmDialog>
 						
 				</h:form>
 		

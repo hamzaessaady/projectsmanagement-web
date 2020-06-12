@@ -36,6 +36,7 @@ public class ProjsSummaryBacking implements Serializable{
 	private List<Project> filteredProjs;
 	private Map<Integer, String>  oldTitleColumns;
 	private List<Integer> disabledDays;
+	private Project selectedProj;
 	
 	@NotNull
 	private String titleInput;
@@ -267,6 +268,19 @@ public class ProjsSummaryBacking implements Serializable{
     }
     
     
+    /**
+     * Removes a project.
+     * 
+     * @param  proj  The selected project to remove.
+     */
+    public void removeProj(Project proj) {
+    	projBean.deleteProj(proj);
+    	projs.remove(proj);
+    	Helpers.addMessage(FacesMessage.SEVERITY_INFO, "Project Deleted",
+    			"Project'"+ proj.getTitle()+"' is successfully deleted.");
+    }
+    
+    
 	/* GETTERS AND SETTERS*/
 	public List<Project> getProjs() {
 		return projs;
@@ -330,6 +344,14 @@ public class ProjsSummaryBacking implements Serializable{
 
 	public void setDisabledDays(List<Integer> disabledDays) {
 		this.disabledDays = disabledDays;
+	}
+
+	public Project getSelectedProj() {
+		return selectedProj;
+	}
+
+	public void setSelectedProj(Project selectedProj) {
+		this.selectedProj = selectedProj;
 	}
 	
 }
