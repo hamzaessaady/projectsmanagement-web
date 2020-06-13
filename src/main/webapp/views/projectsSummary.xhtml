@@ -167,9 +167,11 @@
 					</p:dialog>
 				</h:form>
 				
+				
+				
 				<!-- Data Table -->
 				<h:form id="sec-form">
-					
+
 					<p:growl id="msgs" showDetail="true" />
 					
 					<p:dataTable id="tbl1"
@@ -207,7 +209,9 @@
 							sortBy="#{proj.title}">
 							<p:cellEditor>
 								<f:facet name="output">
-									<h:outputText value="#{proj.title}" />
+									<p:commandLink process="@this" action="#{projsSummaryBacking.redirectProjTasks(proj)}" >
+        								<h:outputText value="#{proj.title}" />
+    								</p:commandLink>
 								</f:facet>
 								<f:facet name="input">
 									<h:inputText id="titleInput" style="padding:5px;"
@@ -223,7 +227,7 @@
 						
 						<p:column headerText="Start date"
 							id="clm-st-date" sortBy="#{proj.startDate}">
-							<h:outputText value="#{proj.startDate}">
+							<h:outputText value="#{proj.startDate}" >
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputText>
 						</p:column>

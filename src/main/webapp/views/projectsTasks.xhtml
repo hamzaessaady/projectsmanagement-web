@@ -1,0 +1,177 @@
+<ui:composition template="/WEB-INF/templates/DashboardLayout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+	<!-- Page Title -->
+	<ui:param name="title" value="#{projsTasksBacking.proj.title}" />
+
+	<!-- Tab Index -->
+	<ui:param name="tabIndex" value="1" />
+
+
+	<!-- Main Content -->
+	<ui:define name="tab-content">
+		<p:importConstants type="isi.essaady.helpers.Constants" var="const" />
+
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="../index.xhtml" />
+			<p:menuitem value="Dashboard" url="dashboard.xhtml" />
+			<p:menuitem value="Projects" url="projectsSummary.xhtml" />
+			<p:menuitem value="#{projsTasksBacking.proj.title}"
+				url="projectsTasks.xhtml" />
+		</p:breadCrumb>
+
+		<!-- Section Banner -->
+		<section class="banner-section banner-projs">
+			<h1 class="white mb-1">Projects |
+				#{projsTasksBacking.proj.title}</h1>
+			<p:outputPanel style="display:block" styleClass="black"
+				id="projsCountDiv">
+				<i class="fa fa-fw fa-bolt" />
+				<strong>#{projsTasksBacking.proj.tasks.size()}</strong>
+				task(s) in total
+			</p:outputPanel>
+			<img src="../resources/images/project-icon.png" />
+		</section>
+
+		<!-- Main Article -->
+		<article class="tab-article">
+
+			<p:commandButton value="reload" update="dataView" ajax="true" />
+			
+			
+			<!-- Timeline Section -->
+			<!-- <section>
+				<p:timeline id="timeline" value="#{customTimelineView.model}"
+					editable="true" eventMargin="10" eventMarginAxis="0"
+					start="#{customTimelineView.start}" end="#{customTimelineView.end}"
+					axisOnTop="true" stackEvents="false" widgetVar="timelineWdgt">
+					<f:facet name="menu">
+						<p:commandButton type="button" icon="pi pi-chevron-left"
+							onclick="PF('timelineWdgt').move(-0.3);" />
+						<p:commandButton type="button" icon="pi pi-chevron-right"
+							onclick="PF('timelineWdgt').move(0.3);" />
+						<p:commandButton type="button" icon="pi pi-search-minus"
+							onclick="PF('timelineWdgt').zoom(-0.5);" />
+						<p:commandButton type="button" icon="pi pi-search-plus"
+							onclick="PF('timelineWdgt').zoom(0.5);" />
+					</f:facet>
+
+					<f:facet name="loading">
+						<i class="pi pi-spin pi-spinner" style="font-size: 3em"></i>
+					</f:facet>
+				</p:timeline>
+			</section> -->
+
+			<!-- Tasks Section  -->
+			<section class="shadow">
+				<p:dataView id="dataView" var="task" paginator="true"
+					styleClass="dataViewTasks" paginatorAlwaysVisible="false"
+					value="#{projsTasksBacking.proj.tasks}" layout="grid">
+					<p:dataViewGridItem columns="2">
+						<p:panel header="#{task.title}" style="text-align:left">
+	
+							<f:facet name="footer">
+								<div class="p-grid p-justify-end" style="margin:0">
+									<p:commandButton update="dlgCollabId"
+										oncomplete="PF('dlgCollab').show()" icon="fa fx fa-user-plus"
+										title="Add collaborator" style="text-align:right"
+										action="#{projsTasksBacking.setSelectedTask(task)}" />
+		
+									<p:commandButton update="dlgCompId"
+										oncomplete="PF('dlgComp').show()"
+										icon="fa fx fa-tag"
+										title="Add competence" style="text-align:right"
+										action="#{projsTasksBacking.setSelectedTask(task)}" />
+								</div>
+							</f:facet>
+							
+							<h:panelGrid layout="flex" columns="2" style="width:100%"
+								columnClasses="p-col-1, p-col-11">
+								<i class="fa fa-calendar" />
+								<h:outputText value="#{task.startDate}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+								<i class="fa fa-calendar" />
+								<h:outputText value="#{task.endDate}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+								<i class="fa fa-users" />
+								<h:outputText value="#{task.competences.size()}" />
+							</h:panelGrid>
+							
+						</p:panel>
+					</p:dataViewGridItem>
+				</p:dataView>
+			</section>
+			
+			<p:growl id="msgsBackEnd" globalOnly="true" showDetail="true" />
+			
+			<!-- Dialog : Add collab -->
+			<p:dialog styleClass="dialogAddCollab" header="Assign new collaborator"
+				widgetVar="dlgCollab" id="dlgCollabId" modal="true"
+				draggable="false" resizable="false" width="70vw">
+
+				<h:outputText value="#{projsTasksBacking.getSelectedTask().title}" />
+
+			</p:dialog>
+			
+			<!-- Dialog : Add comp -->
+			<p:dialog styleClass="dialogAddCollab" id="dlgCompId"
+						header="Assign new competence" widgetVar="dlgComp" 
+						modal="true" draggable="false" resizable="false" width="70vw">
+				<h:form >
+					<h3>Pick new competences :</h3>
+					<p:pickList id="PojoPickList" value="#{projsTasksBacking.compsDualList}"
+						var="compsDL" effect="bounce" itemValue="#{compsDL}"
+						itemLabel="#{compsDL.name}" 
+						 showCheckbox="true"
+						showSourceFilter="true" showTargetFilter="true"
+						filterMatchMode="contains" converter="competenceConverter"
+						responsive="true"
+						style="padding: 20px">
+	
+						<f:facet name="sourceCaption">Available</f:facet>
+						<f:facet name="targetCaption">Starting</f:facet>
+	
+						<p:ajax event="transfer" listener="#{projsTasksBacking.onTransfer}"
+							 />
+						<p:ajax event="select" listener="#{projsTasksBacking.onSelect}"
+							 />
+						<p:ajax event="unselect" listener="#{projsTasksBacking.onUnselect}"
+							/>
+						<p:ajax event="reorder" listener="#{projsTasksBacking.onReorder}"
+							 />
+	
+	
+						<p:column style="width:85%;">
+							<h:outputText value="#{compsDL.name}" />
+						</p:column>
+
+						
+					</p:pickList>
+					
+					<div class="p-grid p-justify-center">
+					<div class="p-col-6 mt-1">
+						<p:commandButton value="Submit" id="submitAddComps"
+							update="msgsBackEnd, dlgCompId, dataView"
+							action="#{projsTasksBacking.updateTaskComps}"
+							style="width:100%;border: none;"
+							ajax="true" />
+					</div>
+					</div>
+					
+				</h:form>
+			</p:dialog>
+			
+
+
+		</article>
+
+	</ui:define>
+
+</ui:composition>
