@@ -496,20 +496,26 @@
     	
     	#inplace-new-comp .ui-inputfield.ui-state-error{border-color: #ef476f;}
     	
-    	#sec-form .ui-dialog-content{
+    	#sec-form .ui-dialog-content,
+    	#confirmDialog .ui-dialog-content{
     		font-size: 1.1em;
     		font-weight: 500;
     		padding: 2em;
     	}
     	
-    	#sec-form .ui-icon.ui-icon-alert.ui-confirm-dialog-severity {display: none;}
+    	#sec-form .ui-icon.ui-icon-alert.ui-confirm-dialog-severity,
+    	#confirmDialog .ui-icon.ui-icon-alert.ui-confirm-dialog-severity{
+    		display: none;
+    	}
     	
-    	#sec-form .ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left{
+    	#sec-form .ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left,
+    	#confirmDialog .ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left{
     		background-color: #ff7295;
     		border: none;
     	}
     	
-    	#sec-form .ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{
+    	#sec-form .ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only,
+    	#confirmDialog .ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{
     		background-color: #00C6FF;
     		border: none;
     	}
@@ -644,7 +650,71 @@
 		.ui-dataview-header.ui-widget-header.ui-helper-clearfix.ui-corner-top{
 			background: linear-gradient(240deg, #ff7295 0%, #fe875d 100%);
 		}
-
+		
+		.ui-panel-content.ui-widget-content td {
+			padding: 0;
+		}
+		
+		.dataview-footer .bin{
+    		color: white ;
+    		background-color: #ff7295 ;
+    		border: none;
+    	}
+    	.dataview-footer .bin:hover{
+    		color: #ff7295 ;
+    		background-color: transparent ;
+    		border: none;
+    	}
+    	
+    	.dataview-footer .addCollab,
+    	.dataview-footer .addComp{
+    		background-color: #00C6FF ;
+    		border: none;
+    	}
+    	.dataview-footer .addCollab:hover,
+    	.dataview-footer .addComp:hover{
+    		color: #00C6FF  ;
+    		background-color: transparent ;
+    		border: none;
+    	}
+    	
+    	
+    	.inProgress{
+    		border-left:5px solid #36A2EB;
+    	}
+    	.finished{
+    		border-left:5px solid #FFCD56;
+    	}
+    	.unstarted  {
+    		border-left:5px solid #fe875d;
+    	}
+    	
+    	.dataViewTasks .ui-panel-titlebar.ui-widget-header.ui-helper-clearfix.ui-corner-all{
+    		color: #475355;
+    		background-color:white;
+    		font-size: 1.5em;
+    		text-align: center;
+    	}
+    	
+    	.dataViewTasks .ui-datalist-content{
+			border: none;
+		}
+		
+		#projTaskReview {
+			color: white;
+			text-align: center;
+			font-weight: 500;
+			margin-top: 5px;
+			padding: 5px;
+			background-color: rgba(0, 0, 0, 0.4);
+			width: 130px;
+			border-radius: 100px;
+		}
+		
+		#projTaskReview  i:nth-child(1),
+		#projTaskReview  i:nth-child(2){
+			margin-right: 8px;
+		}
 
 	</style>
 
