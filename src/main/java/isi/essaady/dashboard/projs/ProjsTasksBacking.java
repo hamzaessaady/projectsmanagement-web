@@ -19,11 +19,16 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DualListModel;
 
+import isi.essaady.ejbs.CollabTaskPlanBean;
+import isi.essaady.ejbs.CollaboratorBean;
 import isi.essaady.ejbs.CompetenceBean;
 import isi.essaady.ejbs.ProjectBean;
 import isi.essaady.ejbs.TaskBean;
+import isi.essaady.entities.CollabTaskPlan;
+import isi.essaady.entities.Collaborator;
 import isi.essaady.entities.Competence;
 import isi.essaady.entities.Project;
 import isi.essaady.entities.Task;
@@ -38,9 +43,12 @@ public class ProjsTasksBacking implements Serializable {
 
 	private Project proj;
 	private List<Competence> comps;
+	private List<CollabTaskPlan> plans;
 	private Task selectedTask;
 	private DualListModel<Competence> compsDualList;
 	private List<Integer> disabledDays;
+	private int assignedHrsInput;
+	Map<Integer, Integer> oldSpinnerColumns;
 	
 	@NotNull
 	private String titleInput;
@@ -58,12 +66,17 @@ public class ProjsTasksBacking implements Serializable {
 	private TaskBean taskBean;
 	@EJB
 	private ProjectBean projBean;
+	@EJB
+	private CollaboratorBean collabBean;
+	@EJB
+	private CollabTaskPlanBean planBean;
 
 	@PostConstruct
 	public void init() {
 		proj = (Project) FacesContext.getCurrentInstance().getExternalContext()
 									 .getFlash().get("proj");
 		comps = compBean.getAllComps();
+		plans = planBean.getAllCollabTaskPlan();
 		compsDualList = new DualListModel<Competence>(comps,comps);
 		startDateInput = proj.getStartDate();
 		endDateInput = proj.getEndDate();
@@ -71,6 +84,7 @@ public class ProjsTasksBacking implements Serializable {
 		disabledDays = new ArrayList<>();
 		disabledDays.add(0);
 		disabledDays.add(6);
+		oldSpinnerColumns = new HashMap<Integer,Integer>();
 	}
 	
 	
@@ -85,12 +99,8 @@ public class ProjsTasksBacking implements Serializable {
 			this.selectedTask.setCompetences(updatedComps);
 			taskBean.updateTask(this.selectedTask);
 			
-			//projBean.updateProj(this.proj);
-			
-			//proj.getTasks().forEach(t -> System.out.println("Task : "+t.getTitle()+" --> "+t.getCompetences().size()));
-			
 			Helpers.addMessage(FacesMessage.SEVERITY_INFO,"Competences updated",
-					"The task is succefully saved with the new updated competences");
+					"The task is succefully saved with the new updated competences.");
 		}
 	}
 	
@@ -99,7 +109,7 @@ public class ProjsTasksBacking implements Serializable {
      * Compares the new selected competences with the previous ones.
      * 
      * @param  oldComps  The old selected competences
-     * @return  boolean  Test result. True if the competences are changed. 
+     * @return  boolean  True if the competences are changed. 
      */
     public boolean isCompsChanged(Set<Competence> oldComps) {
     	
@@ -134,10 +144,11 @@ public class ProjsTasksBacking implements Serializable {
 		this.compsDualList = new DualListModel<Competence>(sourceCompsList,targetCompsList);
 	}
 	
+	
 	 /**
-     * Initializes the source and target lists of the pickList component.
-     * Used by the setter of the selected task to do the initialization before
-     * the competence modal shows.
+     * Adds a new task.
+     * 
+     * @return String Redirection to the current page. 
      * 
      */
 	public String addNewTask() {
@@ -198,14 +209,14 @@ public class ProjsTasksBacking implements Serializable {
 
     	
     	return FacesContext.getCurrentInstance().getViewRoot().getViewId()
-    			+  "?faces-redirect=true";	
-    	
+    			+  "?faces-redirect=true";		
 	}
 	
 	
 	 /**
-     * Initializes the source and target lists of the pickList component.
-
+     * Calculates the remaining project's duration.
+     * 
+     * @return Integer The remaining duration.
      */
 	public int calcRemainingDuration() {
 		
@@ -215,21 +226,30 @@ public class ProjsTasksBacking implements Serializable {
 		return this.proj.getDuration() - tasksDurationSum.get();
 	}
 	
+	
 	/**
      * Removes a Task.
      * 
      * @param  task  The selected task to remove.
      */
     public void removeTask(Task task) {
+    	
     	taskBean.deleteTask(task);
     	this.proj.removeTask(task);
     	FacesContext.getCurrentInstance().getExternalContext().getFlash()
 					.put("proj", this.proj);
+    	
     	Helpers.addMessage(FacesMessage.SEVERITY_INFO, "Task Deleted",
     			"Task'"+ task.getTitle()+"' is successfully deleted.");
     }
     
     
+    /**
+     * Determines the the status of a given task.
+     * 
+     * @param  task  The selected task.
+     * @return String The task's status.
+     */
     public String getTaskStatus(Task task) {
     	Date now = new Date();
     	
@@ -271,8 +291,169 @@ public class ProjsTasksBacking implements Serializable {
     	
     	return projsStatus;
     }
+    
+    
+    /**
+     * Updates the assigned hours of collaborators is the selected task.
+     * It's called when a row is edited.
+     * 
+     * @param event	The handeled RowEditEvent.
+     */
+    public void onRowEdit(RowEditEvent<CollabTaskPlan> event) {
+    	
+    	int rowIdCollab = event.getObject().getCollaborator().getIdCollab();
+    	int oldValue = oldSpinnerColumns.get(rowIdCollab);
+    	
+		event.getObject().setAssignedHours(assignedHrsInput+oldValue);
+		planBean.updateCollabTaskPlan(event.getObject());
+		
+		this.selectedTask.addCollabTaskPlan(event.getObject());
+		this.proj.addTask(this.selectedTask);
+		
+		FacesContext.getCurrentInstance().getExternalContext().getFlash()
+		.put("proj", this.proj);
+		
+    	Helpers.addMessage(FacesMessage.SEVERITY_INFO,"xxxx Edited",
+    			"The new value '"+ assignedHrsInput + "' is successfully added and saved.");
+    	    	
+    	//PrimeFaces.current().ajax().update(":addCollabForm:tbl1");
+    	
+    }
+    
+    
+    /**
+     * Pushes the old title values columns to the oldTitleColumns map.
+     * It's called when a project row switches to edit mode.
+     * 
+     * @param event	The handeled RowEditEvent.
+     */
+    public void onRowEditInit(RowEditEvent<CollabTaskPlan> event) {
+    	this.oldSpinnerColumns
+			.put(event.getObject().getCollaborator().getIdCollab(),
+					event.getObject().getAssignedHours());
+    	
+    	Helpers.addMessage(FacesMessage.SEVERITY_INFO,
+    			"Maximum value is set to "+calcMaxPossibleWork(event.getObject()),"");
+    }
+    
+    /**
+     * Pops the old column values from the oldTitleColumns map.
+     * It's called when a project row edit is cancelled.
+     * 
+     * @param event	The handeled RowEditEvent.
+     */
+    public void onRowCancel(RowEditEvent<CollabTaskPlan> event) {
+    	this.oldSpinnerColumns
+			.remove(event.getObject().getCollaborator().getIdCollab());
+	
+    	//Helpers.addMessage(FacesMessage.SEVERITY_INFO,"Edit Cancelled", "No changes tracked");
+    }
+    
+    
+    /**
+     * Fetches the selective collabs of the task
+     * 
+     * @return  List<Collaborator>  the selective collabs.
+     * 
+     * TODO Delegate this task to the DB because it performs a lot of calculations. 
+     */
+    public int calcMaxPossibleWork(CollabTaskPlan collabTaskPlan) {
+    	List<CollabTaskPlan> selectiveCollabs = fetchSelectiveCollabs(this.selectedTask);
+    	Map<Integer,Integer> collabsCurrentWork = new HashMap<Integer,Integer>();
+    	
+    	// Calculate curr work for each selective collab
+    	selectiveCollabs.forEach(ctp ->
+    		collabsCurrentWork.put(
+    				ctp.getCollaborator().getIdCollab(),
+    				calcCurrentWork(ctp.getCollaborator())));
+    	
+    	int maxWorkCollab = collabsCurrentWork.values()
+    						.stream()
+    						.max((v1,v2) -> v1 > v2 ? 1 : -1)
+    						.get();
+    
+    	
+    	int collabWorkMaj = maxWorkCollab
+    							- calcCurrentWork(collabTaskPlan.getCollaborator())
+    							- collabTaskPlan.getAssignedHours();
+    	System.out.println("--- max(ax) - ai - hi : "+collabWorkMaj);
+    	
+    	if(collabWorkMaj<=0) {
+    		return 0;
+    	}
+    	
+    		
+    	System.out.println("--- d/Cx.len : "+Math.floor((double)selectedTask.getDuration()/selectiveCollabs.size()));
+    	System.out.println("--- d = "+selectedTask.getDuration());
+    	System.out.println("--- Cx = "+selectiveCollabs.size());
+    	return (int) Math.min(
+    			collabWorkMaj,
+    			Math.floor((double)selectedTask.getDuration()/selectiveCollabs.size()));
+    }
+    
+    
+    public int calcTaskRemainingDuration() {
+    	if (this.selectedTask==null) return -1;
+    	int sumDuration = 0;
+    	
+    	for(CollabTaskPlan plan : this.selectedTask.getCollabTaskPlans()) {
+    		sumDuration += plan.getAssignedHours();
+    	}
+    	
+    	return this.selectedTask.getDuration() - sumDuration;
+    }
+    
+    
+    /**
+     * Fetches the selective collabs of the task
+     * 
+     * @return  List<Collaborator>  the selective collabs.
+     * 
+     * TODO Delegate this task to the DB because it performs a lot of calculations. 
+     */
+	public List<CollabTaskPlan> fetchSelectiveCollabs(Task task){
+		if (task==null) return null;
+		
+		List<CollabTaskPlan> selectiveCollabs = new ArrayList<CollabTaskPlan>(
+				task.getCollabTaskPlans());
+		List<Collaborator> collabs = collabBean.getAllCollabs();
+		selectiveCollabs.forEach(ctp -> collabs.remove(ctp.getCollaborator()));
+		
+		for (Collaborator collab : collabs) {
+			Set<Competence> tasksComps = new HashSet<Competence>(task.getCompetences());
+			tasksComps.retainAll(collab.getCompetences());
+			
+			if(tasksComps.size() != 0) {
+				CollabTaskPlan newSelectiveCollab = new CollabTaskPlan();
+				newSelectiveCollab.setAssignedHours(0);
+				newSelectiveCollab.setTask(this.selectedTask);
+				newSelectiveCollab.setCollaborator(collab);
+				selectiveCollabs.add(newSelectiveCollab);
+			}
+		}
+		
+		return selectiveCollabs;
+	}
 	
 	
+	public int calcCurrentWork(Collaborator collab) {
+		
+		int currentWork = 0;
+		
+		for (CollabTaskPlan plan : this.plans) {
+			if(plan.getCollaborator().getIdCollab() == collab.getIdCollab()) {
+				currentWork += plan.getAssignedHours();
+			}
+		}
+		
+		return currentWork;
+	}
+	
+	
+    
+    
+    
+    
 	/* GETTERS AND SETTERS */
 	public Project getProj() {
 		return proj;
@@ -361,6 +542,26 @@ public class ProjsTasksBacking implements Serializable {
 
 	public void setDisabledDays(List<Integer> disabledDays) {
 		this.disabledDays = disabledDays;
+	}
+
+
+	public int getAssignedHrsInput() {
+		return assignedHrsInput;
+	}
+
+
+	public void setAssignedHrsInput(int assignedHrsInput) {
+		this.assignedHrsInput = assignedHrsInput;
+	}
+
+
+	public Map<Integer, Integer> getOldSpinnerColumns() {
+		return oldSpinnerColumns;
+	}
+
+
+	public void setOldSpinnerColumns(Map<Integer, Integer> oldSpinnerColumns) {
+		this.oldSpinnerColumns = oldSpinnerColumns;
 	}
 	
 	

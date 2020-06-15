@@ -137,7 +137,8 @@
 									<p:commandButton update="dlgCollabId" styleClass="addCollab"
 										oncomplete="PF('dlgCollab').show()" icon="fa fx fa-user-plus"
 										title="Add collaborator" style="text-align:right"
-										action="#{projsTasksBacking.setSelectedTask(task)}" />
+										action="#{projsTasksBacking.setSelectedTask(task)}"
+										disabled="#{empty task.competences}"/>
 		
 									<p:commandButton update="dlgCompId"
 										oncomplete="PF('dlgComp').show()"
@@ -195,10 +196,10 @@
 								
 								<i class="fa fa-tags purple" />
 								<p:outputPanel style="display:block">
-								<h:outputText value="No tasks"
+								<h:outputText value="No competences"
 										rendered="#{task.competences.size() eq 0}" />
 								<p:commandLink id="compsLink" type="button"
-									value="#{task.competences.size()} task(s)"
+									value="#{task.competences.size()} competence(s)"
 									rendered="#{task.competences.size() gt 0}"
 									style="font-size:1em;"  />
 								<p:overlayPanel id="compsPanel" for="compsLink"
@@ -219,7 +220,8 @@
 			
 			<p:growl id="msgsBackEnd" globalOnly="true" showDetail="true" />
 			
-			<!-- Confirm Dialog : Add collab -->
+			
+			<!-- Confirm Dialog : Delete collab -->
 			<p:confirmDialog id="confirmDialog"
 		        message="Are you sure about deleting this Task ?"
 		        header="Initiating delete process"
@@ -237,13 +239,93 @@
 			    </h:form>
 			</p:confirmDialog>
 			
+			
 			<!-- Dialog : Add collab -->
 			<p:dialog styleClass="dialogAddCollab" header="Assign new collaborator"
 				widgetVar="dlgCollab" id="dlgCollabId" modal="true"
 				draggable="false" resizable="false" width="70vw">
+				<h:form id="addCollabForm">
 
-				<h:outputText value="#{projsTasksBacking.getSelectedTask().title}" />
-
+					<h3>Assign hours to the new collaborators:</h3>
+					
+					<p:outputPanel id="infoNewPlan" style="display:block;font-size: 1.2em;">
+						<h5 style="margin-bottom: 5px">
+						<span class="purple" style="display:block">
+							<p:spacer width="30" height="0" />
+							<i class="fa fa-exclamation-circle" /> Info : This task's
+							remaining duration is  
+							#{projsTasksBacking.calcTaskRemainingDuration()} hours.
+						</span>
+						</h5>
+					</p:outputPanel>
+					
+					<p:messages id="infoMsgs" closable="true" />
+					
+					<p:remoteCommand name="onRowEdit" update="msgsBackEnd,infoNewPlan,addCollabForm:newPlanTbl" />
+					<p:dataTable id="newPlanTbl" var="taskPlan"
+						value="#{projsTasksBacking.fetchSelectiveCollabs(projsTasksBacking.selectedTask)}" rows="10"
+						widgetVar="collabsTable" rowIndexVar="index"
+						editable="true" scrollable="true" scrollHeight="150"
+						styleClass="centered-columns" style="width:100%">
+						
+						<f:facet name="header">
+	        				All selective collaborators
+						</f:facet>
+						
+						<f:attribute name="index" value="#{index}" />
+						
+						<p:ajax event="rowEdit"
+							listener="#{projsTasksBacking.onRowEdit}"
+							oncomplete="onRowEdit()"/>
+						<p:ajax event="rowEditInit"
+							listener="#{projsTasksBacking.onRowEditInit}"
+							update="msgsBackEnd"
+							async="true" />
+						<p:ajax event="rowEditCancel"
+							listener="#{projsTasksBacking.onRowCancel}"
+							update="msgsBackEnd"/>
+						
+						<p:column headerText="Full name"
+							id="clm-name" 
+							filterMatchMode="contains"
+							sortBy="#{taskPlan.collaborator.lastName} #{taskPlan.collaborator.firstName}">
+							
+							<h:outputText value="#{taskPlan.collaborator.lastName} #{taskPlan.collaborator.firstName}" />
+							
+						</p:column>
+						
+						<p:column headerText="Current work"
+							id="clm-work"  
+							sortBy="#{taskPlan.assignedHours}">
+							<h:outputText
+								value="#{projsTasksBacking.calcCurrentWork(taskPlan.collaborator)}" />
+						</p:column>
+						
+						<p:column headerText="Assigned hours"
+							id="clm-assHours"  
+							sortBy="#{taskPlan.assignedHours}">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{taskPlan.assignedHours}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:spinner id="durationInput"
+										value="#{projsTasksBacking.assignedHrsInput}"
+										min="0" placeholder="projsTasksBacking.calcMaxPossibleWork(taskPlan)"
+								 		max="#{projsTasksBacking.calcMaxPossibleWork(taskPlan)}"
+								 		required="true" 
+								 		requiredMessage="Duration input is required."/>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						
+						<p:column style="width:35px;">
+							<p:rowEditor />
+						</p:column>
+						
+					</p:dataTable>
+				
+				</h:form>
 			</p:dialog>
 			
 			<!-- Dialog : Add comp -->
