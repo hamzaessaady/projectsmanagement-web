@@ -281,6 +281,19 @@ public class ProjsSummaryBacking implements Serializable{
     }
     
     
+    /**
+     * Redirects to the Project tasks view with the project object passed to it.
+     * 
+     * @param  proj  The selected project to remove.
+     */
+    public String redirectProjTasks(Project proj) {
+    	FacesContext.getCurrentInstance().getExternalContext().getFlash()
+    				.put("proj", proj);
+    	
+    	return "projectsTasks";
+    }
+    
+    
 	/* GETTERS AND SETTERS*/
 	public List<Project> getProjs() {
 		return projs;
