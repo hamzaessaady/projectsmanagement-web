@@ -1,4 +1,4 @@
-# Projects Management - EJB
+# Projects Management - WEB
 ![JDK][jdkBadge] <br/>
 By [Hamza Es-saady][linkedinURL]
 
