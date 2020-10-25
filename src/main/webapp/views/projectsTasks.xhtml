@@ -1,0 +1,457 @@
+<ui:composition template="/WEB-INF/templates/DashboardLayout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+	<!-- Page Title -->
+	<ui:param name="title" value="#{projsTasksBacking.proj.title}" />
+
+	<!-- Tab Index -->
+	<ui:param name="tabIndex" value="1" />
+
+
+	<!-- Main Content -->
+	<ui:define name="tab-content">
+		<p:importConstants type="isi.essaady.helpers.Constants" var="const" />
+
+		<p:breadCrumb>
+			<p:menuitem value="Home" url="../index.xhtml" />
+			<p:menuitem value="Dashboard" url="dashboard.xhtml" />
+			<p:menuitem value="Projects" url="projectsSummary.xhtml" />
+			<p:menuitem value="#{projsTasksBacking.proj.title}"
+				url="projectsTasks.xhtml" />
+		</p:breadCrumb>
+
+		<!-- Section Banner -->
+		<section class="banner-section banner-projs" style="height:27vh">
+			<h1 class="white mb-1">Projects |
+				#{projsTasksBacking.proj.title}</h1>
+			
+			<p:outputPanel style="display:block" styleClass="black"
+				id="tasksCountDiv">
+				<span style="margin-bottom:5px">
+					<i class="fa fa-fw fa-bolt" />
+					<strong>#{projsTasksBacking.proj.tasks.size()}</strong>
+					task(s) in total
+				</span>
+				
+				<span style="display:block">
+					<i class="fa fa-fw fa-calendar" />
+					From 
+					<strong>
+					<h:outputText value="#{projsTasksBacking.proj.startDate}" >
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+					</strong>
+					To 
+					<strong>
+					<h:outputText value="#{projsTasksBacking.proj.endDate}" >
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+					</strong>
+				</span>
+				
+				<c:set var="status" value="#{projsTasksBacking.countTasksByStatus()}" />
+				<span style="display:block" id="projTaskReview">
+					#{status.get(const.FINISHED)}
+					<h:panelGroup id="toolTip1"><i class="fa fa-circle  yellow-crayola" /></h:panelGroup>
+					<p:tooltip for="toolTip1" value="Finished" position="bottom" />
+					#{status.get(const.IN_PROGRESS)}
+					<h:panelGroup id="toolTip2"><i class="fa fa-circle blue-carolina"/></h:panelGroup>
+					<p:tooltip for="toolTip2" value="In progress" position="bottom" /> 
+					#{status.get(const.UNSTARTED)}
+					<h:panelGroup id="toolTip3"><i class="fa fa-circle  orange-coral"/></h:panelGroup>
+					<p:tooltip for="toolTip3" value="Unstarted" position="bottom" />
+				</span>
+			</p:outputPanel>
+			<img src="../resources/images/project-icon.png" />
+		</section>
+
+		<!-- Main Article -->
+		<article class="tab-article">
+
+			
+			
+			
+			<!-- Timeline Section -->
+			<!-- <section>
+				<p:timeline id="timeline" value="#{customTimelineView.model}"
+					editable="true" eventMargin="10" eventMarginAxis="0"
+					start="#{customTimelineView.start}" end="#{customTimelineView.end}"
+					axisOnTop="true" stackEvents="false" widgetVar="timelineWdgt">
+					<f:facet name="menu">
+						<p:commandButton type="button" icon="pi pi-chevron-left"
+							onclick="PF('timelineWdgt').move(-0.3);" />
+						<p:commandButton type="button" icon="pi pi-chevron-right"
+							onclick="PF('timelineWdgt').move(0.3);" />
+						<p:commandButton type="button" icon="pi pi-search-minus"
+							onclick="PF('timelineWdgt').zoom(-0.5);" />
+						<p:commandButton type="button" icon="pi pi-search-plus"
+							onclick="PF('timelineWdgt').zoom(0.5);" />
+					</f:facet>
+
+					<f:facet name="loading">
+						<i class="pi pi-spin pi-spinner" style="font-size: 3em"></i>
+					</f:facet>
+				</p:timeline>
+			</section> -->
+
+			<!-- Tasks Section  -->
+			<section class="shadow data-table-section">
+				
+				<div class="p-grid pt-1">
+					<div class="p-col ">
+						<p:commandButton value="New Task" type="button"
+							icon="fa fa-plus" styleClass="addCollabBtn" 
+							onclick="PF('dlgNewTask').show();" />
+					</div>
+					<div class="p-col" style="text-align:right">
+						<p:commandButton styleClass="addCollabBtn" icon="fa fa-refresh"
+						update="dataView,tasksCountDiv" ajax="true" />
+					</div>
+				</div>
+				
+				<div class="p-grid p-justify-center">
+					<p:staticMessage severity="info" detail="There is no task  "
+							summary="EMPTY" styleClass="empty-message-2"
+							rendered="#{empty projsTasksBacking.proj.tasks}"
+							style="padding:10% 10%;margin:10px"/>
+				</div>		
+				
+				
+				<p:dataView id="dataView" var="task" paginator="true"
+					styleClass="dataViewTasks" rows="4" style="margin-top:10px"
+					paginatorAlwaysVisible="false" multiViewState="true"
+					value="#{projsTasksBacking.proj.tasks}" layout="grid"
+					rendered="#{!empty projsTasksBacking.proj.tasks}">		
+					<p:dataViewGridItem columns="2">
+						<p:panel header="#{task.title}" style="text-align:left;"
+							styleClass="shadow-s2 #{projsTasksBacking.getTaskStatus(task)}" >
+	
+							<f:facet name="footer">
+								<div class="p-grid dataview-footer" style="margin:0">
+									<div class="p-col-6">
+									<p:commandButton update="dlgCollabId" styleClass="addCollab"
+										oncomplete="PF('dlgCollab').show()" icon="fa fx fa-user-plus"
+										title="Add collaborator" style="text-align:right"
+										action="#{projsTasksBacking.setSelectedTask(task)}"
+										disabled="#{empty task.competences}"/>
+		
+									<p:commandButton update="dlgCompId"
+										oncomplete="PF('dlgComp').show()"
+										icon="fa fx fa-tag" styleClass="addComp"
+										title="Add competence" style="text-align:right"
+										action="#{projsTasksBacking.setSelectedTask(task)}" />
+									</div>
+									<div class="p-col" style="text-align:right;">
+										<p:commandButton
+											styleClass="bin"
+											onclick="PF('confirmDialog').show()" 
+											icon="fa fx fa-trash" title="Remove">
+											 <f:setPropertyActionListener
+											 	value="#{task}"
+											 	target="#{projsTasksBacking.selectedTask}"/>
+										</p:commandButton> 
+									</div>
+								</div>
+							</f:facet>
+							
+							<h:panelGrid layout="flex" columns="2"
+								style="width:100%;font-size:1em;"
+								columnClasses="p-col-1, p-col-11">
+								
+								<i class="fa fa-calendar-check-o orange" />
+								<h:outputText value="#{task.startDate}" >
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+								
+								<i class="fa fa-calendar-minus-o orange" />
+								<h:outputText value="#{task.endDate}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+								
+								<i class="fa fa-clock-o yellow-crayola" />
+								<h:outputText value="#{task.duration} hours" />
+								
+								<i class="fa fa-users bluSky-darken" />
+								<p:outputPanel style="display:block">
+								<h:outputText value="No collabs"
+										rendered="#{task.collabTaskPlans.size() eq 0}" />
+								<p:commandLink id="collabsLink" type="button"
+									value="#{task.collabTaskPlans.size()} collaborator(s)"
+									rendered="#{task.collabTaskPlans.size() gt 0}"
+									style="font-size:1em;"/>
+								<p:overlayPanel id="collabsPanel" for="collabsLink"
+										hideEffect="fade" modal="false"
+										rendered="#{task.collabTaskPlans.size() gt 0}">
+									<p:dataList value="#{task.collabTaskPlans}" var="plan">
+   										#{plan.collaborator.lastName} 
+   										#{plan.collaborator.firstName}
+									</p:dataList>
+								</p:overlayPanel>
+								</p:outputPanel>
+								
+								<i class="fa fa-tags purple" />
+								<p:outputPanel style="display:block">
+								<h:outputText value="No competences"
+										rendered="#{task.competences.size() eq 0}" />
+								<p:commandLink id="compsLink" type="button"
+									value="#{task.competences.size()} competence(s)"
+									rendered="#{task.competences.size() gt 0}"
+									style="font-size:1em;"  />
+								<p:overlayPanel id="compsPanel" for="compsLink"
+										hideEffect="fade" modal="false"
+										rendered="#{task.competences.size() gt 0}">
+									<p:dataList value="#{task.competences}" var="comp">
+   										#{comp.name}
+									</p:dataList>
+								</p:overlayPanel>
+								</p:outputPanel>
+								
+							</h:panelGrid>
+							
+						</p:panel>
+					</p:dataViewGridItem>
+				</p:dataView>
+			</section>
+			
+			<p:growl id="msgsBackEnd" globalOnly="true" showDetail="true" />
+			
+			
+			<!-- Confirm Dialog : Delete collab -->
+			<p:confirmDialog id="confirmDialog"
+		        message="Are you sure about deleting this Task ?"
+		        header="Initiating delete process"
+		        severity="alert" widgetVar="confirmDialog">
+		        <h:form>
+			        <p:commandButton
+			        	 value="Delete"
+			        	 icon="fa fx fa-trash"
+			        	 actionListener="#{projsTasksBacking.removeTask(projsTasksBacking.selectedTask)}" 
+			        	 update="@form,tasksCountDiv, dataView, msgsBackEnd"
+			        	 oncomplete="PF('confirmDialog').hide()"/>
+			        <p:commandButton
+				        value="Cancel"
+				        onclick="PF('confirmDialog').hide()" type="button" />
+			    </h:form>
+			</p:confirmDialog>
+			
+			
+			<!-- Dialog : Add collab -->
+			<p:dialog styleClass="dialogAddCollab" header="Assign new collaborator"
+				widgetVar="dlgCollab" id="dlgCollabId" modal="true"
+				draggable="false" resizable="false" width="70vw">
+				<h:form id="addCollabForm">
+
+					<h3>Assign hours to the new collaborators:</h3>
+					
+					<p:outputPanel id="infoNewPlan" style="display:block;font-size: 1.2em;">
+						<h5 style="margin-bottom: 5px">
+						<span class="purple" style="display:block">
+							<p:spacer width="30" height="0" />
+							<i class="fa fa-exclamation-circle" /> Info : This task's
+							remaining duration is  
+							#{projsTasksBacking.calcTaskRemainingDuration()} hours.
+						</span>
+						</h5>
+					</p:outputPanel>
+					
+					<p:messages id="infoMsgs" closable="true" />
+					
+					<p:remoteCommand name="onRowEdit" update="msgsBackEnd,infoNewPlan,addCollabForm:newPlanTbl" />
+					<p:dataTable id="newPlanTbl" var="taskPlan"
+						value="#{projsTasksBacking.fetchSelectiveCollabs(projsTasksBacking.selectedTask)}" rows="10"
+						widgetVar="collabsTable" rowIndexVar="index"
+						editable="true" scrollable="true" scrollHeight="150"
+						styleClass="centered-columns" style="width:100%">
+						
+						<f:facet name="header">
+	        				All selective collaborators
+						</f:facet>
+						
+						<f:attribute name="index" value="#{index}" />
+						
+						<p:ajax event="rowEdit"
+							listener="#{projsTasksBacking.onRowEdit}"
+							oncomplete="onRowEdit()"/>
+						<p:ajax event="rowEditInit"
+							listener="#{projsTasksBacking.onRowEditInit}"
+							update="msgsBackEnd"
+							async="true" />
+						<p:ajax event="rowEditCancel"
+							listener="#{projsTasksBacking.onRowCancel}"
+							update="msgsBackEnd"/>
+						
+						<p:column headerText="Full name"
+							id="clm-name" 
+							filterMatchMode="contains"
+							sortBy="#{taskPlan.collaborator.lastName} #{taskPlan.collaborator.firstName}">
+							
+							<h:outputText value="#{taskPlan.collaborator.lastName} #{taskPlan.collaborator.firstName}" />
+							
+						</p:column>
+						
+						<p:column headerText="Current work"
+							id="clm-work"  
+							sortBy="#{taskPlan.assignedHours}">
+							<h:outputText
+								value="#{projsTasksBacking.calcCurrentWork(taskPlan.collaborator)}" />
+						</p:column>
+						
+						<p:column headerText="Assigned hours"
+							id="clm-assHours"  
+							sortBy="#{taskPlan.assignedHours}">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{taskPlan.assignedHours}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:spinner id="durationInput"
+										value="#{projsTasksBacking.assignedHrsInput}"
+										min="0" placeholder="projsTasksBacking.calcMaxPossibleWork(taskPlan)"
+								 		max="#{projsTasksBacking.calcMaxPossibleWork(taskPlan)}"
+								 		required="true" 
+								 		requiredMessage="Duration input is required."/>
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						
+						<p:column style="width:35px;">
+							<p:rowEditor />
+						</p:column>
+						
+					</p:dataTable>
+				
+				</h:form>
+			</p:dialog>
+			
+			<!-- Dialog : Add comp -->
+			<p:dialog styleClass="dialogAddCollab" id="dlgCompId"
+						header="Assign new competence" widgetVar="dlgComp" 
+						modal="true" draggable="false" resizable="false" width="70vw">
+				<h:form >
+					<h3>Select new competences :</h3>
+					<p:pickList id="PojoPickList" value="#{projsTasksBacking.compsDualList}"
+						var="compsDL" effect="bounce" itemValue="#{compsDL}"
+						itemLabel="#{compsDL.name}" 
+						 showCheckbox="true"
+						showSourceFilter="true" showTargetFilter="true"
+						filterMatchMode="contains" converter="competenceConverter"
+						responsive="true"
+						style="padding: 20px">
+	
+						<f:facet name="sourceCaption">Available competences</f:facet>
+						<f:facet name="targetCaption">Selected competences</f:facet>
+	
+						<p:column style="width:85%;">
+							<h:outputText value="#{compsDL.name}" />
+						</p:column>
+					</p:pickList>
+					
+					<div class="p-grid p-justify-center">
+						<div class="p-col-6 mt-1">
+							<p:commandButton value="Submit" id="submitAddComps"
+								update="msgsBackEnd, dlgCompId, dataView"
+								action="#{projsTasksBacking.updateTaskComps}"
+								style="width:100%;border: none;"
+								ajax="true" />
+						</div>
+					</div>
+					
+				</h:form>
+			</p:dialog>
+			
+			<!-- Dialog : Add New Task -->
+			<p:dialog styleClass="dialogAddCollab" id="dlgNewTaskId"
+						header="Assign new competence" widgetVar="dlgNewTask" 
+						modal="true" draggable="false" resizable="false" width="70vw">
+			<h:form>
+				<p:outputPanel class="pt-1" style="display:block;font-size: 1.2em;">
+					<h:outputText value="Please enter the new Task's information :" />
+
+					<h5 style="margin: 5px">
+						<span class="purple" style="display:block">
+							<p:spacer width="30" height="0" />
+							<i class="fa fa-exclamation-circle" /> Info : Designated hours
+							are 08h-12h and 14h-18h from Monday to Friday.
+						</span>
+						<span class="orange" style="display:block">
+							<p:spacer width="30" height="0" />
+							<i class="fa fa-exclamation-circle" /> Note : The project
+							remaining duration is #{projsTasksBacking.calcRemainingDuration()}hrs.
+						</span>
+					</h5>
+
+				</p:outputPanel>
+
+				<p:messages id="errorMsgs" closable="true" />
+				
+				<div id="newProjForm" class="p-grid p-justify-center">
+
+					<div class="p-col-12 mb-1 ui-fluid">
+						<span class="ui-float-label"> <p:inputText id="titleInput"
+								value="#{projsTasksBacking.titleInput}" required="true"
+								requiredMessage="Title input is required." /> <p:outputLabel
+								for="@previous" value="Title" />
+						</span>
+					</div>
+					<div class="p-col-12 mb-1 ui-fluid">
+						<span class="ui-float-label"> <p:inputTextarea
+								id="descInput" value="#{projsTasksBacking.descInput}" rows="2" />
+							<p:outputLabel for="@previous" value="Description" />
+						</span>
+					</div>
+					<div class="p-col-4">
+						<span class="ui-float-label">
+							<p:spinner id="durationInput2"
+								value="#{projsTasksBacking.durationInput}"
+								min="0" max="#{projsTasksBacking.calcRemainingDuration()}"
+								required="true" requiredMessage="Duration input is required." />
+							<p:outputLabel for="@previous" styleClass="defaultFilledInput"
+								value="Duration (max #{projsTasksBacking.calcRemainingDuration()}hrs)" />
+						</span>
+					</div>
+					<div class="p-col-4 p-calendar ">
+						<span class="ui-float-label">
+							<p:datePicker
+								id="startDateInput"
+								value="#{projsTasksBacking.startDateInput}" required="true"
+								showTime="true" requiredMessage="Start Date input is required."
+								disabledDays="#{projsTasksBacking.disabledDays}"
+								mindate="#{projsTasksBacking.proj.startDate}"
+								maxdate="#{projsTasksBacking.proj.endDate}"/>
+							<p:outputLabel for="@previous" styleClass="defaultFilledInput"
+								value="Start date" />
+						</span>
+					</div>
+					<div class="p-col-4 ">
+						<span class="ui-float-label"> <p:datePicker
+								id="endDateInput" value="#{projsTasksBacking.endDateInput}"
+								required="true" showTime="true"
+								requiredMessage="Start Date input is required."
+								disabledDays="#{projsTasksBacking.disabledDays}" />
+							<p:outputLabel for="@previous" styleClass="defaultFilledInput"
+								value="End date" />
+						</span>
+					</div>
+					<div class="p-col-6 mt-1">
+						<p:commandButton value="Submit" id="submitAddTaskForm"
+							update="errorMsgs, msgsBackEnd"
+							action="#{projsTasksBacking.addNewTask}"
+							style="width:100%;border: none;"
+							ajax="true" validateClient="true"/>
+					</div>
+				</div>
+			</h:form>
+			</p:dialog>
+			
+
+
+		</article>
+
+	</ui:define>
+
+</ui:composition>

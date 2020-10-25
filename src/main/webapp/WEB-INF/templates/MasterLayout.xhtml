@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+<f:view contentType="text/html">
+	
+	<!-- HEAD -->
+	<h:head>
+		<meta charset="UTF-8" />
+
+		<h:outputStylesheet name="css/style.css" />
+		<h:outputStylesheet name="css/primeflex/primeflex.css" />
+		<h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+		
+		<!-- Title -->
+		<title>#{title} | Projects Management</title>
+		
+		<!-- CSS -->
+		<ui:include src="/WEB-INF/includes/style.xhtml" />
+		
+	</h:head>
+
+	<!-- BODY -->
+	<h:body>
+		
+		<!-- Header (Default) -->
+		<header >
+			<ui:insert name="header">
+				<ui:include src="/WEB-INF/includes/headerHome.xhtml" />
+			</ui:insert>
+		</header>
+		
+		<!-- Main -->
+		<main>
+			<ui:insert name="content"/>
+		</main>
+		
+		<!-- Footer -->
+		<footer>
+			<ui:insert name="footer" />
+		</footer>
+
+	</h:body>
+	
+	<!-- SCRIPT -->
+	<ui:insert name="script">
+		<script src="../resources/js/randomColor.js"></script>
+		<script src="../resources/js/material-avatar.js"></script>
+		<script src="../resources/js/script.js"></script>
+	</ui:insert>
+	
+</f:view>
+</html>
